@@ -778,7 +778,7 @@ div#deletback {
         <i class="fas fa-redo me-2"></i>Reattempt Test
       </button> 
 
-<button class="btnreattemptlist" onclick="window.location.href = 'reattempt_test_list';" target="_blank">
+<button class="btnreattemptlist" onclick="window.location.href = './reattempt_test_list';" target="_blank">
         <i class="fas fa-redo me-2"></i>list of Reattempt Test
       </button> 
 
@@ -821,7 +821,7 @@ div#deletback {
 			
 			
 			  <div class="col-3">
-			<img src="image/rank.png" alt="Score" class="score-icon">
+			<img src="image/percentile.png" alt="Score" class="score-icon">
               <p class="mb-1">Percentile</p>
               <h4 id="percentile">-</h4>
             </div>
@@ -1162,8 +1162,644 @@ div#deletback {
     <footer>
         <h5 class="footerp">Copyright &copy; 2025 - Quiz Pulse | All Rights Reserved.</h5>
     </footer>
-<script type="module" src="https://qe914u-178fb5.gitlab.io/js/resultmocktest.js"></script>
-<script type="module" src="https://qe914u-178fb5.gitlab.io/js/updatefromgoogle.js"></script>
+ 
+
+<script>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0",
+  authDomain: "quizwiz-91c47.firebaseapp.com",
+  projectId: "quizwiz-91c47",
+  storageBucket: "quizwiz-91c47.appspot.com",
+  messagingSenderId: "318422165023",
+  appId: "1:318422165023:web:2966847b71e8777c07172a",
+  measurementId: "G-733PML4EFH"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+
+
+console.log("Firebase initialized:", {
+  app: firebase.app().name,
+  auth: !!auth,
+  firestore: !!db
+});
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+  // Check authentication first
+  const user = await new Promise(resolve => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+
+  if (!user) {
+    
+    window.location.href = "/";
+    return;
+  } 
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const testId = urlParams.get('testId');
+  
+  
+  
+  
+  // Set up button click handlers
+document.getElementById('viewSolution').addEventListener('click', () => {
+  window.location.href = `solution?testId=${testId}`;
+});
+
+  
+  
+  
+  
+  
+  
+  
+  // Add this inside your DOMContentLoaded event listener, after getting the testId
+const baseTestId = testId.replace(/_rat\d+$/, ''); // Remove any _rat suffix
+
+// Set up button click handlers
+document.getElementById('viewMainResults').addEventListener('click', () => {
+  window.location.href = `mock-test/result?testId=${baseTestId}`;
+});
+
+document.getElementById('reattemptTest').addEventListener('click', () => {
+  // Find the highest existing reattempt number
+  let highestAttempt = 0;
+  const reattemptKeys = Object.keys(localStorage).filter(key => 
+    key.startsWith(`testAttempt_${baseTestId}_rat`) || 
+    key.startsWith(`localTest_${baseTestId}_rat`)
+  );
+  
+  reattemptKeys.forEach(key => {
+    const match = key.match(/_rat(\d+)_/);
+    if (match) {
+      const attemptNum = parseInt(match[1]);
+      if (attemptNum > highestAttempt) highestAttempt = attemptNum;
+    }
+  });
+  
+  const nextAttempt = highestAttempt + 1;
+
+
+	
+	    window.open(`PjDKpZ6HJSVCnUy?testId=${baseTestId}_rat${nextAttempt}&reattempt=true`, '_blank');
+
+  
+});
+  
+  
+ 
+  if (!testId) {
+    // Redirect if no testId provided
+    window.location.href = "/";
+    return;
+  }
+
+  // Check if this is a reattempt (contains '_rat')
+  const isReattempt = testId.includes('_rat');
+  let resultData = null;
+
+  if (isReattempt) {
+    // Handle reattempt results from localStorage only
+    resultData = getLocalResult(testId, user.email);
+    
+    if (resultData) {
+      const attemptNumber = getAttemptNumber(testId);
+      document.querySelector('h1').textContent += ` (Reattempt ${attemptNumber})`;
+    }
+  } else {
+    // Handle main test results
+    resultData = await getMainTestResult(testId, user.email);
+  }
+
+  if (resultData) {
+    displayResults(resultData);
+  } else {
+    alert("No test results found.");
+    window.location.href = "/";
+  } 
+});
+
+// Helper function to get attempt number from testId
+function getAttemptNumber(testId) {
+  const match = testId.match(/_rat(\d+)$/);
+  return match ? parseInt(match[1]) : 1;
+}
+
+// Get result from localStorage
+ function getLocalResult(testId, email) {
+  const key = `localTest_${testId}_${email}`; // for look like this (localTest_mock3ibps2024cclerk_rat2_1sumitkmr0@gmail.com) in localStorage 
+  //const key = `localTest_${testId}_guest`;      // for look like this (localTest_quiz5_rat1_guest) in localStorage 
+  const result = JSON.parse(localStorage.getItem(key));
+  if (result) {
+    console.log("Found in localStorage:", key);
+    return result;
+  }
+  return null;
+}
+
+
+
+// Function to display error message on the page
+function showQuestionLoadError() {
+  const errorDiv = document.createElement('div');
+ /* errorDiv.className = 'alert alert-danger text-center';
+  errorDiv.innerHTML = `
+    <strong>Error:</strong> Could not load question data. 
+    <a href="javascript:window.location.reload()">Please try refreshing</a>.
+  `; */
+  
+  // Insert at the top of the container
+  const container = document.querySelector('.container');
+  if (container) {
+    container.insertBefore(errorDiv, container.firstChild);
+  }
+} 
+
+
+
+async function getMainTestResult(testId, email) {
+  const localStorageKey = `testAttempt_${testId}_${email}`;
+  let result = JSON.parse(localStorage.getItem(localStorageKey));
+  
+  // Define potential domains for JSON fetching
+  const testDomains = [
+     '',  // Current domain (relative path)
+    //'https://quizwiz.a-web.online',
+    'https://host-codes.github.io/qweqweq/'
+	
+    // Add more domains as needed
+  ]; 
+  
+
+    
+
+  // Helper function to load questions from multiple sources
+  async function loadQuestionsWithFallbacks(originalTestId) {
+    let lastError = null;
+    
+    for (const domain of testDomains) {
+      try {
+        const url = domain ? `${domain}/${originalTestId}.json` : `${originalTestId}.json`;
+        //const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const testData = await response.json();
+        
+        if (!testData?.questions) {
+          throw new Error('Test data missing questions');
+        }
+        
+        return testData;
+      } catch (error) {
+        lastError = error;
+        console.warn(`Failed to fetch from ${domain || 'current domain'}:`, error.message);
+      }
+    }
+    
+    console.error("All fetch attempts failed:", lastError);
+    showQuestionLoadError();
+    return null;
+  }
+
+  // Check localStorage first
+  if (result) {
+    // For localStorage results, try to load questions from JSON if missing
+    if (!result.currentTest?.questions) {
+      const originalTestId = result.originalTestId || testId.replace(/_rat\d+$/, '');
+      result.currentTest = await loadQuestionsWithFallbacks(originalTestId);
+      // Update localStorage with the loaded questions
+      if (result.currentTest) {
+        localStorage.setItem(localStorageKey, JSON.stringify(result));
+      }
+    }
+    return result;
+  }
+  
+  // Try Firestore next
+  try {
+    console.log(`Attempting to fetch from Firestore: testId=${testId}, email=${email}`);
+    
+    let snapshot;
+    try {
+      snapshot = await db.collection("mockTests")
+        .where("email", "==", email)
+        .where("testId", "==", testId)
+        .orderBy("timestamp", "desc")
+        .limit(1)
+        .get();
+    } catch (indexError) {
+      console.warn("Composite index error, trying without ordering:", indexError);
+      snapshot = await db.collection("mockTests")
+        .where("email", "==", email)
+        .where("testId", "==", testId)
+        .limit(1)
+        .get();
+    }
+    
+    if (!snapshot.empty) {
+      result = snapshot.docs[0].data();
+      
+      // Load questions from JSON if missing in Firestore data
+      if (!result.currentTest?.questions) {
+        const originalTestId = result.originalTestId || testId.replace(/_rat\d+$/, '');
+        result.currentTest = await loadQuestionsWithFallbacks(originalTestId);
+      }
+      
+      if (result.currentTest) {
+        localStorage.setItem(localStorageKey, JSON.stringify(result));
+      }
+      return result;
+    }
+  } catch (error) {
+    console.error("Firestore error:", error);
+    
+    // Fallback to JSON from multiple sources
+    const originalTestId = testId.replace(/_rat\d+$/, '');
+    const testData = await loadQuestionsWithFallbacks(originalTestId);
+    
+    if (testData) {
+      result = {
+        email: email,
+        testId: testId,
+        currentTest: testData,
+        answers: [],
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem(localStorageKey, JSON.stringify(result));
+      return result;
+    }
+  }
+  
+  return null;
+}
+
+
+
+
+// Helper function to load questions with error handling
+async function loadQuestionsWithErrorHandling(testId) {
+  try {
+    const response = await fetch(`${testId}.json`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      showQuestionLoadError();
+    }
+  } catch (error) {
+    console.error("Couldn't load questions:", error);
+    showQuestionLoadError();
+  }
+  return null;
+}
+
+
+
+
+
+
+
+
+
+
+async function displayResults(data) {
+  // Calculate metrics if not already present
+  if (typeof data.correct === 'undefined') {
+    calculateMissingMetrics(data);
+  }
+  
+  // Calculate answered count (attempted minus answered+marked)
+  const answeredCount = data.attempted - (data.answeredMarked || 0);
+  document.getElementById('myanswered').textContent = answeredCount;
+  
+  // Score display calculations
+  const netScore = data.correct - (data.incorrect * 0.25);
+  document.getElementById('score-display').textContent = 
+    `${netScore.toFixed(2)}/${data.totalQuestions}`;
+  
+  // Percentage calculation
+  const percentage = (netScore / data.totalQuestions) * 100;
+  document.getElementById('percentage').textContent = 
+    `${percentage.toFixed(2)}%`;
+  
+  // Accuracy calculation
+  const accuracy = data.attempted > 0 ? (data.correct / data.attempted) * 100 : 0;
+  document.getElementById('accuracy').textContent = 
+    `${accuracy.toFixed(2)}%`;
+
+  // Performance summary
+  document.getElementById('correct-answers').textContent = `${data.correct}/${data.totalQuestions}`;
+  document.getElementById('incorrect-answers').textContent = `${data.incorrect}/${data.totalQuestions}`;
+  document.getElementById('attempted').textContent = `${data.attempted}/${data.totalQuestions}`;
+  document.getElementById('skipped').textContent = `${data.skipped}/${data.totalQuestions}`;
+  document.getElementById('unseen').textContent = `${data.notVisited}/${data.totalQuestions}`;
+  document.getElementById('marked').textContent = data.marked || 0;
+  document.getElementById('answered-marked').textContent = data.answeredMarked || 0;
+  document.getElementById('not-answered').textContent = data.notAnswered || 0;
+  document.getElementById('total-time').textContent = formatTime(data.totalTime || 0);
+
+  // Score breakdown
+  document.getElementById('total-questions').textContent = data.totalQuestions;
+  document.getElementById('attempted-count').textContent = data.attempted;
+  document.getElementById('not-visited').textContent = data.notVisited;
+  document.getElementById('marked-review').textContent = data.marked || 0;
+  document.getElementById('answered-marked').textContent = data.answeredMarked || 0;
+
+  // Marks distribution
+  document.getElementById('correct-count').textContent = data.correct;
+  document.getElementById('incorrect-count').textContent = data.incorrect;
+  document.getElementById('skipped-count').textContent = data.skipped;
+  document.getElementById('correct-marks').textContent = `+${data.correct}`;
+  document.getElementById('incorrect-marks').textContent = `-${(data.incorrect * 0.25).toFixed(2)}`;
+  document.getElementById('skipped-marks').textContent = '0';
+
+  // Question-wise analysis
+  const tableBody = document.getElementById('question-analysis-body');
+  tableBody.innerHTML = '';
+
+  if (!data.answers || !data.answers.length) {
+    tableBody.innerHTML = `<tr><td colspan="5">No answer data available</td></tr>`;
+    return;
+  }
+
+  // Get testId from URL and extract base test name
+  const urlParams = new URLSearchParams(window.location.search);
+  const testId = urlParams.get('testId');
+  const baseTestId = testId.replace(/_rat\d+$/, ''); // Remove _rat2, _rat3 etc.
+
+  try {
+    // Define potential domains for JSON fetching
+    const testDomains = [
+      '', // Current domain (relative path)
+      //'https://host-codes.github.io/qweqweq/'
+	  'https://qe914u-178fb5.gitlab.io/Jacksontest/'
+    ];
+
+    let questionData = null;
+    let lastError = null;
+
+    // Try fetching from each domain until successful
+    for (const domain of testDomains) {
+      try {
+        const url = domain ? `${domain}/${baseTestId}.json` : `${baseTestId}.json`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        questionData = await response.json();
+        
+        if (!questionData?.questions) {
+          throw new Error('Test data missing questions');
+        }
+        
+        break; // Exit loop if successful
+      } catch (error) {
+        lastError = error;
+        console.warn(`Failed to fetch from ${domain || 'current domain'}:`, error.message);
+        continue;
+      }
+    }
+
+    if (!questionData) {
+      throw lastError || new Error('All sources failed to load question data');
+    }
+
+    // Set test title from loaded data
+    document.getElementById('test-title').textContent = questionData.title || "Test Results";
+
+    // Display attempt number if it's a reattempt
+    if (testId.includes('_rat')) {
+      const attemptNumber = testId.match(/_rat(\d+)$/)[1];
+      // document.querySelector('h1').textContent += ` (Reattempt ${attemptNumber})`;
+    }
+
+    // Display question analysis
+    data.answers.forEach((userAnswer, index) => {
+      const row = document.createElement('tr');
+      const question = questionData.questions[index];
+      
+      // Handle both english and non-english question formats
+      const correctAnswer = question.english?.correctAnswer !== undefined ? 
+        question.english.correctAnswer : 
+        question.correctAnswer;
+        
+      const isSkipped = userAnswer === null || userAnswer === undefined;
+      const timeSpent = data.timeSpentPerQuestion?.[index] || 0;
+      const isMarked = data.markedQuestions?.[index];
+      const isCorrect = !isSkipped && parseInt(userAnswer) === parseInt(correctAnswer);
+      
+      // Display user's answer
+      const userAnswerDisplay = isSkipped ? 
+        '<span class="answer-circle skipped-circle">-</span>' : 
+        `<span class="answer-circle ${isCorrect ? 'correct-circle' : 'incorrect-circle'}">
+          ${String.fromCharCode(65 + parseInt(userAnswer))}
+        </span>`;
+      
+      // Display correct answer
+      const correctAnswerDisplay = String.fromCharCode(65 + parseInt(correctAnswer));
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td class="text-center">${userAnswerDisplay}</td>
+        <td class="text-center">${correctAnswerDisplay}</td>
+        <td class="${isCorrect ? 'text-success' : 'text-danger'} fw-bold">
+          ${isSkipped ? '0' : (isCorrect ? '+1' : '-0.25')}
+        </td>
+        <td>${formatTime(timeSpent)}</td>
+      `;
+      
+      tableBody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error("Error loading question data:", error);
+
+    // Show error message but still display what data we have
+    const errorRow = document.createElement('tr');
+    errorRow.innerHTML = `
+      <td colspan="5" class="text-center text-danger">
+        Partial data loaded - some correct answers may not display
+      </td>
+    `;
+    tableBody.appendChild(errorRow);
+
+    // Try to display whatever answers we can
+    data.answers.forEach((userAnswer, index) => {
+      const row = document.createElement('tr');
+      const isSkipped = userAnswer === null || userAnswer === undefined;
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td class="text-center">
+          ${isSkipped ? 
+            '<span class="answer-circle skipped-circle">-</span>' : 
+            `<span class="answer-circle answered-circle">
+              ${String.fromCharCode(65 + parseInt(userAnswer))}
+            </span>`}
+        </td>
+        <td class="text-center">-</td>
+        <td>${isSkipped ? '0' : '?'}</td>
+        <td>${formatTime(data.timeSpentPerQuestion?.[index] || 0)}</td>
+      `;
+      
+      tableBody.appendChild(row);
+    });
+  }
+}
+
+
+
+function calculateMissingMetrics(data) {
+  // Calculate correct/incorrect if not present
+  if (typeof data.correct === 'undefined') {
+    data.correct = 0;
+	
+	data.answered = 0;
+	
+    data.incorrect = 0;
+    data.attempted = 0;
+    data.skipped = 0;
+    data.notVisited = 0;
+    data.marked = 0;
+    data.answeredAndMarked = 0;
+	data.answeredMarked = 0;
+    data.notAnswered = 0;
+
+    
+    if (data.answers && data.currentTest?.questions) {
+      data.answers.forEach((answer, index) => {
+        const question = data.currentTest.questions[index];
+        if (!question) return;
+        
+        const correctAnswer = parseInt(question.answer);
+        const userAnswer = answer;
+        
+        if (userAnswer === null || userAnswer === undefined) {
+          data.skipped++;
+        } else if (parseInt(userAnswer) === correctAnswer) {
+          data.correct++;
+          data.attempted++;
+        } else {
+          data.incorrect++;
+          data.attempted++;
+        }
+        
+        // Check if marked for review
+        if (data.markedQuestions && data.markedQuestions[index]) {
+          data.marked++;
+          if (userAnswer !== null && userAnswer !== undefined) {
+            data.answeredAndMarked++;
+          }
+        }
+      });
+    }
+    
+    // Calculate derived metrics
+    data.totalQuestions = data.totalQuestions || (data.currentTest?.questions?.length || 0);
+	 //  data.notAnswered = data.totalQuestions - data.attempted;
+	   
+	  // data.answered = data.attempted - data.answeredMarked;
+	   
+    data.notVisited = data.totalQuestions - data.attempted - data.skipped;
+
+    data.percentage = (data.correct / data.totalQuestions) * 100;
+    data.accuracy = data.attempted > 0 ? (data.correct / data.attempted) * 100 : 0;
+    data.score = data.correct - (data.incorrect * 0.25);
+  }
+}
+
+
+
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+
+
+</script>
+
+
+
+  <script type="module">
+  // ✅ Firebase config
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0",
+    authDomain: "quizwiz-91c47.firebaseapp.com",
+    projectId: "quizwiz-91c47",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🧠 Helper to get testId from URL
+  function getTestIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("testId");
+  }
+
+  // 🔥 Google Apps Script endpoint URL
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxnQlGYratuVB2-1WwcbV5p5v94cJxQ9b0McF9c7yK0738GtLhXyk19JM-imQSQ8c6Nkw/exec";
+
+  // 🔐 Wait for user auth and fetch result
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const testId = getTestIdFromURL();
+      const email = user.email;
+
+      // 🚀 Call Apps Script with email & testId
+      fetch(`${scriptURL}?email=${encodeURIComponent(email)}&testId=${encodeURIComponent(testId)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Response from Apps Script:", data);
+
+          if (data.error) {
+            document.getElementById("rank").textContent = "Not Found";
+            document.getElementById("percentile").textContent = "-";
+            return;
+          }
+
+          const rank = data["Rank"] || "-";
+          const total = data["Total Participants"] || "-";
+          const percentile = data["Percentile"] || "-";
+
+          document.getElementById("rank").textContent = ` ${rank}/${total}`;
+          document.getElementById("percentile").textContent = ` ${percentile}%`;
+        })
+		
+	
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          document.getElementById("rank").textContent = "-";
+          document.getElementById("percentile").textContent = "-";
+        });
+    } else {
+      document.getElementById("rank").textContent = "Login Required";
+      document.getElementById("percentile").textContent = "-";
+    }
+  });
+</script>
+
+<script type="module" src="https://qe914u-178fb5.gitlab.io/js/resultmocktest.jsp"></script>
+<script type="module" src="https://qe914u-178fb5.gitlab.io/js/updatefromgoogle.jsp"></script>
 <script type="module" src="https://qe914u-178fb5.gitlab.io/js/fornormalpageloginsignout.js"></script>
 </body>
 </html>
