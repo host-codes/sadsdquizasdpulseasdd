@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  
+   <style>
+ 
+    nav {
+    width: 100%;
+ background-color: #757578;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    padding: 12px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 52px;
+	
+    }
+
+    .logo {
+      font-weight: 300;
+    font-family: 'Cabin Sketch', sans-serif;
+    font-size: 29px;
+    color: #ebbaff;
+    text-shadow: -1px 2px 5px #3f3c3c;
+	cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    ul li a {
+      text-decoration: none;
+      color: #000000;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    ul li a:hover {
+      color: #5a5454;
+    }
+
+    /* Hide the checkbox */
+    #check {
+      display: none;
+    }
+
+    .checkbtn {
+      display: none;
+      cursor: pointer;
+    }
+
+    /* SVG Icon Styling */
+    .checkbtn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+	  margin-left: 24em;
+    }
+
+
+ul.dropdown-menu.dropdown-menu-end.show {
+    background-color: #e5e5e5;
+}
+
+
+    /* Responsive menu */
+   /* Responsive */
+    @media (max-width: 768px) {
+      .checkbtn {
+        display: block;
+      }
+
+#user-avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    margin-right: 29px;
+   /* margin-left: -226px;*/
+}
+      ul {
+        position: absolute;
+        top: 53px;
+        left: -100%;
+        width: 100%;
+        /*height: calc(100vh - 60px); */
+        background: #484848;
+        flex-direction: column;
+        align-items: center;
+        transition: left 0.3s ease;
+      }
+
+      ul li {
+        width: 100%;
+        text-align: center;
+      }
+
+      ul li a {
+        display: block;
+        width: 100%;
+        padding: 20px;
+      }
+
+      #check:checked ~ ul {
+        left: 0;
+      }
+    }
+  </style>
+    <style>
+  #verification-status {
+  min-height: 50px;
+}
+.verification-pending {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 10px;
+  border-radius: 4px;
+}
+.verification-success {
+  color: #155724;
+  background-color: #d4edda;
+  padding: 10px;
+  border-radius: 4px;
+}
+</style>
+
+
+<style>
+
+
+  #verification-overlay {
+    position: fixed;
+    top: 0; 
+	left: 0;
+    width: 100vw; 
+	height: 100vh;
+    background: rgb(255 255 255 / 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  #verification-overlay .overlay-box {
+      background: #fff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    max-width: 454px;
+    width: 56%;
+    border: 2px solid #d1d1d1;
+  }
+  
+  
+  
+  #verification-overlay .verification-content {
+      background: #fff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    max-width: 454px;
+    width: 56%;
+    border: 2px solid #d1d1d1;
+  } 
+span#verify-email-display {
+    font-weight: 700!important;
+    color: #17b514;
+}
+
+.fw-bold {
+    font-weight: 700!important;
+    color: #2fc141;
+}
+
+
+#blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  display: none;
+  z-index: 999;
+}
+</style>
+  <style>
+    :root {
+      --sidebar-width: 220px;
+      --sidebar-collapsed: 70px;
+      --bg-light: #f4f4f4;
+      --bg-dark: #1e1e2f;
+      --text-light: #fff;
+      --text-dark: #333;
+	  --text-color-form: #000000;
+	  --text-color-dropdown: #000000;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg-light);
+      transition: background 0.3s;
+    }
+
+    body.dark {
+      background: #121212;
+      color: var(--text-light);
+    }
+        ::-webkit-scrollbar-track
+{
+background-color: #ffffff;
+}
+::-webkit-scrollbar {
+    width: 11px;
+    height: 5px;
+    background-color: #f5f8fc;
+}
+::-webkit-scrollbar-thumb
+{
+border-radius: 8px;
+        border: 2px solid #757578;
+    background-color: #757578;
+background-image: -webkit-linear-gradient(45deg,
+rgba(255, 255, 255, .2) 25%,
+transparent 25%,
+transparent 50%,
+rgba(255, 255, 255, .2) 50%,
+rgba(255, 255, 255, .2) 75%,
+transparent 75%,
+transparent)
+}
+
+
+label.form-label {
+    color: var(--text-color-form);  
+}
+
+
+.dropdown-menu li {
+    color: var(--text-color-dropdown);  
+}
+
+
+    /* Navbar */
+    .navbar {
+      height: 60px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      border-bottom: 1px solid #ccc;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .navbar.dark {
+      background: #222;
+      color: var(--text-light);
+    }
+
+    .toggle-dark {
+      cursor: pointer;
+      padding: 0.4rem;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed;
+      left: 0;
+      top: 52px;
+      width: var(--sidebar-width);
+      height: 100vh;
+         background: #626262;
+      transition: width 0.3s;
+      overflow: hidden;
+      color: white;
+    }
+
+    #sidebar.collapsed {
+      width: var(--sidebar-collapsed);
+    }
+
+    #sidebar a {
+     display: flex;
+    align-items: center;
+    padding: 1rem;
+       /*color: #e5c89c;*/
+    text-decoration: none;
+    transition: background 0.2s;
+
+    /*color: #d9c7e7;
+     border-radius: 50px; */
+    /* padding: 20px 10px 23px; */
+    /* border: 3px solid #f4f4f4; */
+    border-bottom-left-radius: 45px;
+    border-top-left-radius: 45px;
+    /* width: 200px; */
+    height: 4px;
+    margin-bottom: 5px;
+	    
+		font-weight: 600;
+ 
+    font-size: 14px;
+    }
+	
+	#sidebar {color: #e5c89c;}
+	
+	a {color: #ededed;}
+	
+a.sidebar-link {
+    background-color: #9f9f9f;
+}
+    
+
+    #sidebar i {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+
+    #sidebar.collapsed a span {
+      display: none;
+    }
+
+    .content {
+      margin-left: var(--sidebar-width);
+      padding: 1rem;
+      transition: margin-left 0.3s;
+    margin-top: 49px;
+     }
+    
+
+    #sidebar.collapsed ~ .content {
+      margin-left: var(--sidebar-collapsed);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* Toggle Button */
+    .sidebar-toggle {
+     background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2rem;
+    cursor: pointer; 
+    display: flex;
+    align-items: center;
+    padding: 11px;
+    color: #d9c7e7;
+    text-decoration: none;
+    transition: background 0.2s;
+    background-color: rgb(153 125 165);
+    border-radius: 7px;
+    height: 36px;
+    width: 40px;
+    margin-left: 9px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+	
+	
+	
+	
+
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Toggle Button */
+.dark-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-color, #000);
+}
+
+/* Profile Dropdown */
+.profile-pic {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+
+  </style>
+  
+    <style>
+  /* Toggle Switch */
+.toggle-container {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  margin-right: 20px;
+}
+
+.toggle-switch {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.3s;
+}
+
+.toggle-label .toggle-ball {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch:checked + .toggle-label {
+  background-color: #4caf50;
+}
+
+.toggle-switch:checked + .toggle-label .toggle-ball {
+  transform: translateX(26px);
+}
+
+/* Dark Mode Theme */
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+}
+
+body.dark-mode header {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.dark-mode #sidebar {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.dark-mode .content {
+  background-color: #181818;
+  color: white;
+}
+
+
+#sidebar a:hover {
+          background: #b3b3b3;
+		   
+    border-bottom-left-radius: 45px;
+    border-top-left-radius: 45px;
+	height: 4px;
+    }
+
+.sidebar-link.active {
+    background-color: #f4f4f4;
+    color: #000;
+    /* border-radius: 50px; */
+    padding: 20px 10px 23px;
+    border: 1px solid #f4f4f4;
+    border-bottom-left-radius: 45px;
+    border-top-left-radius: 45px;
+    /* width: 200px; */
+    height: 4px;
+    border-right: 0px;
+}
+
+  </style>
+  
+  <style> 
+  /* Base styles */
+h5 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  transition: border 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.edit-btn {
+  color: #4a90e2;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.edit-btn:hover i {
+  color: #007bff;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+/* Align edit button next to input */
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.ms-2 {
+  margin-left: 0.5rem;
+}
+
+
+
+
+
+/* Container */
+.form-container {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 7px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 5%);
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+    border: 2px solid #e3e3e3;
+}
+
+/* Heading */
+.form-container h5 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Input groups */
+.row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group.full {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+
+
+input[type="text"], input[type="email"], input[type="tel"] {
+width: 100%;
+    padding: 0.45rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #ebeae9;
+}
+
+input:focus {
+  border-color: #5a67d8;
+}
+
+
+
+   </style>
+   
+     <style> 
+	 
+	 /*  for button */
+   button#save-profile-btn {
+padding: 6px 1px;
+    /* color: var(--white); */
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: var(--transition);
+    width: 13%;
+    color: #ffffff;
+    background: linear-gradient(90deg,rgb(155 89 182) 0%, rgb(190 143 219) 50%, rgb(159 93 191) 100%);
+}   
+
+  button#save-profile-btn:hover {   background: linear-gradient(90deg,rgb(155 89 182) 0%, rgb(147 75 191) 50%, rgb(214 162 239) 100%);}
+
+button#change-password-btn {
+    padding: 10px 0px;
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: var(--transition);
+    width: 120%;
+	color: #ffffff;
+    background: linear-gradient(90deg,rgb(230 126 34) 0%, rgb(243 175 115) 50%, rgb(231 130 40) 100%);
+
+}
+
+   button#change-password-btn:hover { background: linear-gradient(90deg,rgb(230 126 34) 0%, rgb(225 137 60) 50%, rgb(243 183 129) 100%);}
+
+
+
+
+
+/* CSS */
+.category-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  background-color: #ededed;
+  position: relative;
+  overflow: hidden;
+  /*max-width: 500px;*/
+  margin: 20px auto;
+}
+
+.card-left {
+  z-index: 2;
+}
+
+.card-left h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 14px;
+  color: #333;
+}
+
+.explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: #f6f6f6;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.explore-btn:hover {
+  background: #eaeaea;
+}
+
+.card-right {
+        background: #e3bdff;
+    border-top-left-radius: 27%;
+    border-bottom-left-radius: 315%;
+    height: 100%;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.card-right img {
+  width: 60px;
+  height: auto;
+}
+
+</style>
+
+
+<style>
+/* Fixed header styling */
+.header {
+  position: relative;
+padding: 10px 20px;
+display: flex;
+   color: var(--text-color, #000);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+/* Logo style */
+.header .logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Right section (toggle + profile) */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Dark mode toggle switch */
+.toggle-container {
+  position: relative;
+  width: 50px;
+  height: 25px;
+}
+
+.toggle-switch {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 25px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-label .toggle-ball {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-switch:checked + .toggle-label {
+  background-color: #4CAF50;
+}
+
+.toggle-switch:checked + .toggle-label .toggle-ball {
+  transform: translateX(24px);
+}
+
+/* Profile Image */
+.profile-pic {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+}
+h5.mb-0 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #757578;
+}
+
+/* Dropdown Menu */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background-color: #f3f3f3;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  min-width: 150px;
+  padding: 10px 0;
+   z-index: 1001;
+    list-style: none;
+}
+
+
+
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+
+.dropdown-menu li:hover {
+  background-color: #f5f5f5;
+}
+
+
+
+.dropdown {
+  position: relative;
+}
+
+
+
+
+.dropdown-menu li {
+    padding: 5px 18px;
+
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #d5d5d5;
+	
+	list-style: none;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+	}
+
+.modal-headerp {
+    background: #ff9292;
+    padding: 1rem;
+    border-radius: 7px;
+    box-shadow: inset 0 2px 20px 19px rgb(221 122 122 / 78%);
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+}
+
+div#deletback {
+    background: #ebd1d1;
+    padding: 2rem;
+    border-radius: 7px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 5%);
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+    border: 2px solid #cf9696;
+}
+/* Responsive layout */
+@media (max-width: 576px) {
+  .d-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .edit-btn {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .ms-2 {
+    margin-left: 0;
+  }
+  
+  
+  button#save-profile-btn {
+
+    width: 41%;}
+   
+
+}
+
+</style>
+</head>
+<body>
+
+  
+  
+  
+   <nav>
+
+	 <a href="/" class="link"><label class="logo">Quiz Pulse</label></a>
+<h2 class="userinfo"> </h2>
+
+	<!-- --><ul id="header-nav"> </ul>
+ <div class="dropdown">
+	<!-- --><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" >
+              <span id="user-name"></span> 
+			  <img id="user-avatar" src="data:image/svg+xml;base64,PHN2ZyBjbGFzcz0ic3ZnLWljb24iIHN0eWxlPSJ3aWR0aDogMWVtOyBoZWlnaHQ6IDFlbTt2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO2ZpbGw6IGN1cnJlbnRDb2xvcjtvdmVyZmxvdzogaGlkZGVuOyIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MDcuMzYgMTAzQzI3OS44NCAxMDMgOTQuNzMgMjg4LjEyIDk0LjczIDUxNS42NmE0MjIuNDEgNDIyLjQxIDAgMCAwIDYuNDggNzAuNjFjMCAwLjE0IDAuMjUgMC4wOCAwLjMgMC4yYTEzLjU4IDEzLjU4IDAgMCAwIDEzIDEwLjA2IDEzLjc2IDEzLjc2IDAgMCAwIDEzLjc1LTEzLjc2IDExLjg4IDExLjg4IDAgMCAwLTAuMjctMS4zMmwwLjI0LTAuMTFhMzg2IDM4NiAwIDAgMS02LTY1LjY2YzAtMjEyLjcgMTcyLjQzLTM4NS4xMyAzODUuMTItMzg1LjEzUzg5Mi40OSAzMDMgODkyLjQ5IDUxNS42OCA3MjAuMDYgOTAwLjggNTA3LjM2IDkwMC44Yy0xNDIuMTQgMC0yNjYtNzcuMjItMzMyLjY5LTE5MS43OSAwLTAuMDctMC4wOS0wLjExLTAuMTEtMC4xOC0wLjE4LTAuMy0wLjM4LTAuNTktMC41NS0wLjg5YTEzLjYxIDEzLjYxIDAgMCAwLTEyLTcuMzcgMTMuNzYgMTMuNzYgMCAwIDAtMTMuNzUgMTMuNzUgMTMuNDIgMTMuNDIgMCAwIDAgMi43NCA3LjgzbC0wLjIzIDAuMTRjNzEuNTMgMTIzIDIwNC40MSAyMDYgMzU2LjYxIDIwNkM3MzQuODkgOTI4LjI5IDkyMCA3NDMuMiA5MjAgNTE1LjY2UzczNC44OSAxMDMgNTA3LjM2IDEwM3oiIGZpbGw9IiMzNTg1RjkiIC8+PHBhdGggZD0iTTUwNy4zNyA1NzAuNDNjODIuMzIgMCAxNDkuMzEgNjcgMTQ5LjMxIDE0OS4zMWgyNy41MWMwLTk3LjQ5LTc5LjMyLTE3Ni44Mi0xNzYuODItMTc2Ljgycy0xNzYuODMgNzkuMzMtMTc2LjgzIDE3Ni44MmgyNy41MWMwLTgyLjMzIDY2Ljk1LTE0OS4zMSAxNDkuMzItMTQ5LjMxeiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNMzQ0LjI5IDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNjcwLjQzIDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNTMxLjg1NDQ2NCA0NDguNjIwNjM2bS03Ni45MjYxNDYgNzYuOTI2MTQ3YTEwOC43OSAxMDguNzkgMCAxIDAgMTUzLjg1MjI5My0xNTMuODUyMjk0IDEwOC43OSAxMDguNzkgMCAxIDAtMTUzLjg1MjI5MyAxNTMuODUyMjk0WiIgZmlsbD0iI0JBRDRGRiIgLz48cGF0aCBkPSJNNTA3LjM2IDU3MC40MmMtNzUuMTUgMC0xMzYuMjktNjEuMTQtMTM2LjI5LTEzNi4zczYxLjE0LTEzNi4zIDEzNi4yOS0xMzYuMyAxMzYuMyA2MS4xNSAxMzYuMyAxMzYuMy02MS4xNCAxMzYuMy0xMzYuMyAxMzYuM3ogbTAtMjQ1LjA5YTEwOC44IDEwOC44IDAgMSAwIDEwOC44IDEwOC43OSAxMDguOTIgMTA4LjkyIDAgMCAwLTEwOC44LTEwOC43OXoiIGZpbGw9IiMzNTg1RjkiIC8+PC9zdmc+" class="rounded-circle me-2" alt="User" style="width:30px;height:30px;" class="profile-pic" id="profileToggle">
+             
+            </a> 
+
+      <ul class="dropdown-menu" id="dropdownMenu">
+        <li><i class='fa fa-home'></i> <a  href="/">Home</a></li>
+       <li id="signout-btn" ><i class='bx bx-log-out'></i>  Logout </li>
+
+      </ul>
+    </div>
+	 <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11"></div>
+  </nav> 
+  
+  
+
+  <section id="sidebar">
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class='bx bx-menu'></i></button>
+     <a href="#" class="sidebar-link" onclick="showPage('dashboard')"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+     <a href="#" class="sidebar-link" onclick="showPage('myprofile')"><i class='bx bxs-user'></i><span>My Profile</span></a>
+   
+	 <a href="#" class="sidebar-link" onclick="showPage('password')">
+	 
+	 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 64 64" fill="#1f2f50">
+  <path d="M48,28H16c-2.2,0-4,1.8-4,4v24c0,2.2,1.8,4,4,4h32c2.2,0,4-1.8,4-4V32C52,29.8,50.2,28,48,28z M28,48h-4v4h-4v-4h-4v-4h4v-4h-4
+    v-4h4v-4h4v4h4v-4h4v4h4v4h-4v4h4v4h-4v4h-4V48z"/>
+  <path d="M32,8c-6.6,0-12,5.4-12,12v8h4v-8c0-4.4,3.6-8,8-8s8,3.6,8,8v8h4v-8C44,13.4,38.6,8,32,8z"/>
+</svg> &nbsp;<span>Change Password</span></a>
+	
+	 
+	 
+	 
+	 
+	  <a href="#" class="sidebar-link" onclick="showPage('deleteaccount')">
+	  <svg fill="#f97a91" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 width="22px" height="22px" viewBox="0 0 57.828 57.827"
+	 xml:space="preserve">
+<g>
+	<g>
+		<circle cx="24.87" cy="13.811" r="13.811"/>
+		<path d="M6.972,52.484l9.718,2.56c4.215,1.109,11.004,0.979,15.173-0.293l3.93-1.205c2.209,2.614,5.505,4.281,9.188,4.281
+			c6.633,0,12.03-5.397,12.03-12.03c0-6.635-5.397-12.032-12.03-12.032c-1.124,0-2.207,0.167-3.239,0.456
+			c-2.494-3.016-5.696-5.299-9.631-6.58c-2.292,1.345-4.947,2.129-7.791,2.129c-2.857,0-5.527-0.792-7.826-2.149
+			c-7.347,2.302-12.55,7.888-15.278,15.2C-0.311,46.905,2.757,51.374,6.972,52.484z M44.95,35.346
+			c5.732,0,10.378,4.646,10.378,10.38c0,5.732-4.646,10.379-10.378,10.379s-10.379-4.646-10.379-10.379
+			C34.572,39.992,39.217,35.346,44.95,35.346z"/>
+		<path d="M39.138,51.036c0.365,0.402,0.866,0.604,1.37,0.604c0.446,0,0.896-0.16,1.251-0.485l3.19-2.916l3.189,2.916
+			c0.356,0.325,0.805,0.485,1.251,0.485c0.502,0,1.003-0.203,1.37-0.604c0.691-0.755,0.638-1.93-0.118-2.621l-2.943-2.691
+			l2.943-2.691c0.756-0.691,0.809-1.864,0.118-2.621c-0.691-0.757-1.864-0.808-2.621-0.118l-3.189,2.918l-3.19-2.918
+			c-0.757-0.691-1.929-0.638-2.621,0.118c-0.691,0.757-0.639,1.93,0.118,2.621l2.944,2.691l-2.944,2.691
+			C38.5,49.106,38.448,50.281,39.138,51.036z"/>
+	</g>
+</g>
+</svg>&nbsp;<span>Delete account</span></a>
+
+</section>
+  
+
+
+  <!-- Main Content -->
+  <div class="content">
+    <div id="dashboard" class="page active">  <!-- -------------------------------start Dashboard------------------------------------------- -->
+      
+	  
+	  
+	  <!-- HTML -->
+<div class="category-card">
+  <div class="card-left">
+    <h3>Dashboard</h3>
+  <div class="tags">
+      <span class="tag">User dashboard section.</span>
+      
+    </div>
+
+  </div>
+  <div class="card-right">
+
+	<i class="bx bxs-dashboard" style="font-size:64px;color:#919193;"></i>
+  </div> 
+</div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-body text-center">
+            <img id="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyBjbGFzcz0ic3ZnLWljb24iIHN0eWxlPSJ3aWR0aDogMWVtOyBoZWlnaHQ6IDFlbTt2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO2ZpbGw6IGN1cnJlbnRDb2xvcjtvdmVyZmxvdzogaGlkZGVuOyIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MDcuMzYgMTAzQzI3OS44NCAxMDMgOTQuNzMgMjg4LjEyIDk0LjczIDUxNS42NmE0MjIuNDEgNDIyLjQxIDAgMCAwIDYuNDggNzAuNjFjMCAwLjE0IDAuMjUgMC4wOCAwLjMgMC4yYTEzLjU4IDEzLjU4IDAgMCAwIDEzIDEwLjA2IDEzLjc2IDEzLjc2IDAgMCAwIDEzLjc1LTEzLjc2IDExLjg4IDExLjg4IDAgMCAwLTAuMjctMS4zMmwwLjI0LTAuMTFhMzg2IDM4NiAwIDAgMS02LTY1LjY2YzAtMjEyLjcgMTcyLjQzLTM4NS4xMyAzODUuMTItMzg1LjEzUzg5Mi40OSAzMDMgODkyLjQ5IDUxNS42OCA3MjAuMDYgOTAwLjggNTA3LjM2IDkwMC44Yy0xNDIuMTQgMC0yNjYtNzcuMjItMzMyLjY5LTE5MS43OSAwLTAuMDctMC4wOS0wLjExLTAuMTEtMC4xOC0wLjE4LTAuMy0wLjM4LTAuNTktMC41NS0wLjg5YTEzLjYxIDEzLjYxIDAgMCAwLTEyLTcuMzcgMTMuNzYgMTMuNzYgMCAwIDAtMTMuNzUgMTMuNzUgMTMuNDIgMTMuNDIgMCAwIDAgMi43NCA3LjgzbC0wLjIzIDAuMTRjNzEuNTMgMTIzIDIwNC40MSAyMDYgMzU2LjYxIDIwNkM3MzQuODkgOTI4LjI5IDkyMCA3NDMuMiA5MjAgNTE1LjY2UzczNC44OSAxMDMgNTA3LjM2IDEwM3oiIGZpbGw9IiMzNTg1RjkiIC8+PHBhdGggZD0iTTUwNy4zNyA1NzAuNDNjODIuMzIgMCAxNDkuMzEgNjcgMTQ5LjMxIDE0OS4zMWgyNy41MWMwLTk3LjQ5LTc5LjMyLTE3Ni44Mi0xNzYuODItMTc2Ljgycy0xNzYuODMgNzkuMzMtMTc2LjgzIDE3Ni44MmgyNy41MWMwLTgyLjMzIDY2Ljk1LTE0OS4zMSAxNDkuMzItMTQ5LjMxeiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNMzQ0LjI5IDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNjcwLjQzIDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNTMxLjg1NDQ2NCA0NDguNjIwNjM2bS03Ni45MjYxNDYgNzYuOTI2MTQ3YTEwOC43OSAxMDguNzkgMCAxIDAgMTUzLjg1MjI5My0xNTMuODUyMjk0IDEwOC43OSAxMDguNzkgMCAxIDAtMTUzLjg1MjI5MyAxNTMuODUyMjk0WiIgZmlsbD0iI0JBRDRGRiIgLz48cGF0aCBkPSJNNTA3LjM2IDU3MC40MmMtNzUuMTUgMC0xMzYuMjktNjEuMTQtMTM2LjI5LTEzNi4zczYxLjE0LTEzNi4zIDEzNi4yOS0xMzYuMyAxMzYuMyA2MS4xNSAxMzYuMyAxMzYuMy02MS4xNCAxMzYuMy0xMzYuMyAxMzYuM3ogbTAtMjQ1LjA5YTEwOC44IDEwOC44IDAgMSAwIDEwOC44IDEwOC43OSAxMDguOTIgMTA4LjkyIDAgMCAwLTEwOC44LTEwOC43OXoiIGZpbGw9IiMzNTg1RjkiIC8+PC9zdmc+" class="rounded-circle mb-3" alt="Profile" style="width:150px;height:150px;">
+            <h5 id="profile-name" class="card-title">Loading...</h5>
+            <p id="profile-email" class="card-text text-muted">Loading...</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="card">
+          <div class="card-header">
+            <h5>Dashboard</h5>
+          </div>
+          <div class="card-body">
+            <p>Welcome to your dashboard! Here you can manage your account settings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+
+    </div>      <!-- -----------------------------END-- Dashboard------------------------------------------- -->
+
+
+
+
+
+
+    <div id="myprofile" class="page">  <!-- -----------------------------START-- Settings------------------------------------------ -->
+   
+  
+	  
+	  
+	  <!-- HTML -->
+<div class="category-card">
+  <div class="card-left">
+    <h3>My Profile</h3>
+
+    <div class="tags">
+      <span class="tag">User Details</span>
+     <span class="tag">This is the Profile section.</span>
+    </div> 
+   
+  </div>
+  <div class="card-right">
+    <i class="bx bxs-user" style="font-size:64px;color:#919193;"></i>
+  </div>
+</div>
+
+	  
+	  
+	  
+	  <!-- Profile Form -->
+  <form id="profile-form" class="mb-4">
+    <!-- Your profile form fields here -->
+<div class="card mt-4">
+  <div class="card-header text-black">
+    <h5 class="mb-0">User Details</h5>
+  </div>
+  <div class="card-body">
+    <div class="row">
+	
+	
+	
+	
+	
+	    
+  <div class="col-md-5">  
+  
+  	  <div class="form-container">
+  <h5>My Profile</h5>
+
+ 
+ 
+ 
+      <div class="col-md-6">
+    
+		
+	<div class="d-flex align-items-center mb-3">
+    <h6 class="text-muted me-2">Email address:</h6>
+    <p class="mb-0" id="email-display"></p>
+  </div>
+  
+  
+        <div class="mb-3">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="dob-input">
+        </div>
+      </div>
+ 
+
+  <div class="form-group full">
+  <label class="form-label">Username</label>
+  
+	<input type="text" class="form-control" id="username-input" value="">
+  </div>
+ <label class="form-label">Mobile Number</label>
+  <div class="form-group full">
+     <input type="tel" class="form-control" id="mobile-input">
+  </div>
+
+
+  
+  <div class="mb-3">
+
+          <label class="form-label">Gender</label>
+          <select class="form-select" id="gender-select">
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          
+          </select>
+        </div>
+  
+</div>
+
+   </div>
+
+  
+
+  
+  <div class="col-md-6">  
+  
+  	  <div class="form-container">
+  <h5>Address Details</h5>
+
+ 
+
+  <div class="form-group full">
+  <label class="form-label">House No.</label>
+    <input type="text" placeholder="House No." id="house-no-input">
+  </div>
+ <label class="form-label">Street</label>
+  <div class="form-group full">
+    <input type="text" placeholder="Address" id="street-input">
+  </div>
+
+
+   <label class="form-label">District</label>
+  <div class="form-group full">
+    <input type="tel" placeholder="District" id="district-input">
+  </div>
+  
+   <div class="row">
+    <div class="form-group">
+	 <label class="form-label">State</label>
+      <input type="text" placeholder="State" id="state-input">
+    </div>
+    <div class="form-group">
+	<label class="form-label">Pincode</label>
+      <input type="text" placeholder="Pincode"  id="pincode-input">
+    </div>
+  </div>
+</div>
+
+  
+   </div>
+  
+	
+	</div>
+	
+
+	<button class="btn btn-primary" id="save-profile-btn">
+        <i class="fas fa-save me-2"></i>Save Profile
+      </button>
+  </div>
+</div>
+  </form>
+	  
+
+</div>     <!-- -----------------------------END-- Settings------------------------------------------- -->
+	
+	
+	
+	
+	
+<div id="password" class="page">  <!-- -----------------------------START-- password- section------------------------------------------ -->
+     <div class="category-card">
+  <div class="card-left">
+    <h3>Password</h3>
+
+   <div class="tags">
+      <span class="tag">password Section</span>
+     
+    </div> 
+   
+  </div>
+  <div class="card-right">
+   <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 64 64" fill="#919193">
+  <path d="M48,28H16c-2.2,0-4,1.8-4,4v24c0,2.2,1.8,4,4,4h32c2.2,0,4-1.8,4-4V32C52,29.8,50.2,28,48,28z M28,48h-4v4h-4v-4h-4v-4h4v-4h-4
+    v-4h4v-4h4v4h4v-4h4v4h4v4h-4v4h4v4h-4v4h-4V48z"/>
+  <path d="M32,8c-6.6,0-12,5.4-12,12v8h4v-8c0-4.4,3.6-8,8-8s8,3.6,8,8v8h4v-8C44,13.4,38.6,8,32,8z"/>
+</svg>
+
+  </div>
+</div>
+	  <div class="form-container">
+ <!-- Change Password Modal -->
+
+        <div class="modal-header">
+          <h5 class="modal-title">Change Password</h5>
+       
+        </div>
+        <div class="modal-body">
+          <form id="change-password-form">
+            <div class="mb-3">
+              <label for="current-password" class="form-label">Current Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="current-password" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="new-password" class="form-label">New Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="new-password" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="confirm-password" class="form-label">Confirm New Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="confirm-password" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+          </form>
+        </div>
+     
+</div>
+
+    </div> <!-- -----------------------------END-- password------------------------------------------ -->
+	
+	
+	
+	
+ <div id="deleteaccount" class="page">  <!-- -----------------------------START-- Delete Account------------------------------------------- -->
+   
+
+
+     <div class="category-card">
+  <div class="card-left">
+    <h3>Delete Account</h3>
+		 <p>if You Delete your account. then you never can login , your profile and test data deletd, you never retive again </p>
+
+   
+  </div>
+  <div class="card-right">
+   <svg fill="#f97a91" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 width="80px" height="80px" viewBox="0 0 57.828 57.827"
+	 xml:space="preserve">
+<g>
+	<g>
+		<circle cx="24.87" cy="13.811" r="13.811"/>
+		<path d="M6.972,52.484l9.718,2.56c4.215,1.109,11.004,0.979,15.173-0.293l3.93-1.205c2.209,2.614,5.505,4.281,9.188,4.281
+			c6.633,0,12.03-5.397,12.03-12.03c0-6.635-5.397-12.032-12.03-12.032c-1.124,0-2.207,0.167-3.239,0.456
+			c-2.494-3.016-5.696-5.299-9.631-6.58c-2.292,1.345-4.947,2.129-7.791,2.129c-2.857,0-5.527-0.792-7.826-2.149
+			c-7.347,2.302-12.55,7.888-15.278,15.2C-0.311,46.905,2.757,51.374,6.972,52.484z M44.95,35.346
+			c5.732,0,10.378,4.646,10.378,10.38c0,5.732-4.646,10.379-10.378,10.379s-10.379-4.646-10.379-10.379
+			C34.572,39.992,39.217,35.346,44.95,35.346z"/>
+		<path d="M39.138,51.036c0.365,0.402,0.866,0.604,1.37,0.604c0.446,0,0.896-0.16,1.251-0.485l3.19-2.916l3.189,2.916
+			c0.356,0.325,0.805,0.485,1.251,0.485c0.502,0,1.003-0.203,1.37-0.604c0.691-0.755,0.638-1.93-0.118-2.621l-2.943-2.691
+			l2.943-2.691c0.756-0.691,0.809-1.864,0.118-2.621c-0.691-0.757-1.864-0.808-2.621-0.118l-3.189,2.918l-3.19-2.918
+			c-0.757-0.691-1.929-0.638-2.621,0.118c-0.691,0.757-0.639,1.93,0.118,2.621l2.944,2.691l-2.944,2.691
+			C38.5,49.106,38.448,50.281,39.138,51.036z"/>
+	</g>
+</g>
+</svg>
+  </div>
+</div>
+	     <div class="form-container" id="deletback">
+
+
+        <div class="modal-headerp">
+          <h5 class="modal-titlep">Confirm Account Deletion(Think twice)</h5>
+       
+        </div>
+
+
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <form id="confirm-delete-form">
+          <div class="mb-3">
+            <label for="delete-password" class="form-label">Enter your password to confirm</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="delete-password" required>
+              <button class="btn btn-outline-secondary toggle-password" type="button">
+                <i class="fa fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger" id="delete-account-btn" >Delete Account</button>
+          </div>
+        </form>
+      </div>
+	  
+	 
+        </div>
+
+    </div> 
+	
+		
+  </div> 
+  
+  
+  
+  
+  <!-- Verification Overlay -->
+<div id="verification-overlay" style="display: none;">
+  <div class="verification-content">
+  
+  
+
+ 
+  <div class="mb-3">
+      <i class="fas fa-envelope fa-4x text-primary mb-3"></i>
+      <h3>Verify Your Email</h3>
+      <p>We've sent a verification email to <span id="verification-email" class="fw-bold"></span></p>
+      <p>Please check your inbox and click the verification link.</p>
+    </div>
+ 
+ 
+ 
+	
+    <button id="resend-verification-btn" class="btn btn-outline-primary me-2">  <i class="fas fa-redo me-2"></i>Resend Email</button>&nbsp;|&nbsp;
+  <!--  <button id="sign-out-btn">Sign Out</button> -->
+	
+	<button id="overlay-logout-btn" class="btn btn-outline-danger">
+      <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+    </button>
+  </div>
+</div>
+
+<!-- Blur Overlay -->
+<div id="blur-overlay" style="display: none;"></div>
+
+  <script>
+ 
+	
+	function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  // Show the selected page
+  document.getElementById(pageId).classList.add('active');
+
+  // Update active link
+  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+  const activeLink = Array.from(document.querySelectorAll('.sidebar-link'))
+    .find(link => link.getAttribute('onclick')?.includes(pageId));
+  if (activeLink) activeLink.classList.add('active');
+}
+
+
+    // Sidebar toggle
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+
+
+  </script>
+  
+  
+  <script>
+
+
+  // Profile dropdown
+  const profileToggle = document.getElementById('profileToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  profileToggle.addEventListener('click', () => {
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Hide dropdown when clicking outside
+  window.addEventListener('click', function(e) {
+    if (!profileToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.style.display = 'none';
+    }
+  }); 
+</script>
+
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Firebase SDK v9 -->
+ <!--  --> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script> 
+  
+  <!-- Dashboard Logic -->
+  <script type="module" src="https://qe914u-178fb5.gitlab.io/js/dashboard.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.jspp"></script>
+</body>
+</html>
