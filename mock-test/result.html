@@ -759,7 +759,7 @@ div#deletback {
 	 <ul class="dropdown-menu" id="dropdownMenupp">
       <!--<li><i class='bx bxs-dashboard'></i> Dashboard</li>-->
 	  <li><i class='bx bxs-dashboard'></i> <a class="dropdown-item" href="https://quizpulse.a-web.online/dashboard">Dashboard</a> </li>
-	  <li ><i class='bx bx-log-out'></i> <a class="dropdown-item" href="https://quizpulse.a-web.online">Logout </a>  </li>
+	   <li id="signout-btn" ><i class='bx bx-log-out'></i>  Logout </li>
      <!-- <li><i class='bx bx-log-out'></i> <a class="dropdown-item" href="#" id="signout-btn">Logout</a></li>-->
     </ul>
   </div>
@@ -1185,8 +1185,18 @@ div#deletback {
 
 
 
+	  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Firebase SDK v9 -->
+ <!--  --> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script> 
+  
+  <!-- Dashboard Logic -->
+  <script type="module" src="https://qe914u-178fb5.gitlab.io/js/firebasehowjiconfig.js"></script>
+
 <script type="module" src="https://qe914u-178fb5.gitlab.io/js/resultmocktest.js"></script>
 <script type="module" src="https://qe914u-178fb5.gitlab.io/js/updatefromgoogle.js"></script>
-<script type="module" src="https://qe914u-178fb5.gitlab.io/js/fornormalpageloginsignout.js"></script>
+<script type="module" src="https://qe914u-178fb5.gitlab.io/js/fornormalpageloginsignout.jspp"></script>
 </body>
 </html>
