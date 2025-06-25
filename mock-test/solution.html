@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Test Solution | Quiz Pulse</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+   <link rel="stylesheet" href="style-sol.css">
+   
+     
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+      <style> 
+
+ /* Enhanced mode indicators */
+.reattempt-mode .question-column,
+.reattempt-mode .answer-column {
+  background-color: #fff9e6;
+ /* border-left: 4px solid #ffc107; */
+  padding-left: 15px;
+      border-top: 4px solid #ffc107;
+}
+
+.reattempt-indicator {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-left: 15px;
+  animation: pulse 2s infinite;
+}
+
+
+/* Clear status indicators 
+.status-summary {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}*/
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Question grid enhancements 
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  padding: 15px 0;
+
+.question-number-box {
+  transition: transform 0.2s;
+}
+
+.question-number-box:hover {
+  transform: scale(1.1);
+}*/
+
+.correct-answer {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-left: 3px solid #28a745;
+  color: #28a745;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.incorrect-answer {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 3px solid #dc3545;
+  color: #dc3545;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+
+.correct-answer {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 3px solid #28a645;
+  color: #dc3545;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.correct-indicator {
+  color: #28a745;
+  font-size: 0.9em;
+  margin-left: 8px;
+  font-style: italic;
+}
+
+.option input[type="radio"] {
+  margin-right: 10px;
+}
+      </style>  
+	  
+	  
+	   
+     <style> 
+button#previous-btn {
+    background-color: aliceblue;
+    width: 107px;
+    border-radius: 5px;
+    border: 1px solid #2d72ba;
+    color: #2d72ba;
+}
+  button#next-btn {
+    background-color: aliceblue;
+    width: 107px;
+    border-radius: 5px;
+    border: 1px solid #2d72ba;
+    color: #2d72ba;
+}
+
+.btn:disabled {
+    color: antiquewhite;
+    pointer-events: none;
+    background-color: antiquewhite;
+    border-color: antiquewhite;
+    opacity: 0.45;
+}
+   
+.question-number-box.correct {
+      width: 45px;
+    height: 41px;
+    background: linear-gradient(to bottom, #9dd429, #53aa18);
+    clip-path: polygon(32% 0, 71% 0, 100% 43%, 100% 99%, 0 99%, 0 43%);
+     color: white; 
+    font-weight: 500;
+    text-align: center;
+    line-height: 36px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 0px;
+    cursor: pointer;
+    border: 2px solid #a0cd55;
+    transition: 0.3s ease;
+    box-shadow: 1px 1px 0px 0px #88c824;
+}
+
+.question-number-box.incorrect {
+       position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f14b07;
+    width: 45px;
+    height: 41px;
+    color: #ffffff;
+    /* background: linear-gradient(to bottom, #f14b07, #d0610b); */
+    background: linear-gradient(to bottom, #ff5008, #ac2909);
+    clip-path: polygon(0 0, 100% 0, 100% 57%, 73% 100%, 29% 100%, 0 54%);
+    border: 2px solid #b93500;
+}
+
+.question-number-box.not-answered {
+    width: 45px;
+    height: 41px;
+    background: linear-gradient(to bottom, #b7b4b4, #737473);
+    /* clip-path: polygon(32% 0, 71% 0, 100% 43%, 100% 99%, 0 99%, 0 43%); */
+    /* color: white; */
+    font-weight: 500;
+    text-align: center;
+    line-height: 36px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 0px;
+    cursor: pointer;
+    /* border: 2px solid #a0cd55; */
+    transition: 0.3s ease;
+    /* box-shadow: 1px 1px 0px 0px #88c824; */
+    clip-path: polygon(1% 0%, 100% 0%, 100% 52%, 100% 100%, 1% 100%, 0% 50%);
+}
+.question-number-box.not-visited {
+    width: 45px;
+    height: 41px;
+    background: linear-gradient(to bottom, #f1efef, #babbba);
+    /* clip-path: polygon(32% 0, 71% 0, 100% 43%, 100% 99%, 0 99%, 0 43%); */
+    /* color: white; */
+    font-weight: 500;
+    text-align: center;
+    line-height: 36px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 0px;
+    cursor: pointer;
+    /* border: 2px solid #a0cd55; */
+    transition: 0.3s ease;
+    /* box-shadow: 1px 1px 0px 0px #88c824; */
+    clip-path: polygon(1% 0%, 100% 0%, 100% 52%, 100% 100%, 1% 100%, 0% 50%);
+}
+  </style>
+  
+  
+  <style>
+    /* Your existing styles... */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    .row.content {height: 450px}
+    
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    span.subtitlep {
+      font-size: 15px;
+    }
+
+    .status-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+      background: white;
+      padding: 11px;
+      margin-left: -21px;
+      margin-right: -20px;
+    }
+
+    /* Answer highlighting */
+    .correct-answer {
+         background-color: rgb(86 227 119 / 29%);
+    /* border-left: 3px solid #28a745; */
+    color: #0f8f13;
+    /* padding: 12px; */
+    text-shadow: 2px 3px 20px #033207;
+    border-radius: 12px;
+    }
+
+    .incorrect-answer {
+      background-color: rgb(241 209 205 / 29%);
+    /* border-left: 3px solid #28a745; */
+    color: #bd0808;
+    /* padding: 12px; */
+    text-shadow: 2px 3px 16px #f72c0c;
+    border-radius: 48px;
+    }
+
+    /* Question grid styling 
+    .question-number-box {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin: 5px;
+      text-align: center;
+      line-height: 30px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      border-radius: 4px;
+    }*/
+
+
+
+    .footer-center {
+      color: #000;
+      margin-left: 32pc;
+      font-weight: 400;
+      padding: 0px 9px;
+    }
+    
+    .reattempt-mode {
+      background-color: #fff3cd;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Responsive styles */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+      .footer-center {
+        margin-left: 0;
+        text-align: center;
+      }
+    }
+  </style>
+  
+  
+  
+  
+  
+  
+  <style>
+  /* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #727272;
+    border-radius: 33px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #9f9b9b; 
+}
+  
+  
+  
+    #instructions-page {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .instruction-section {
+      margin-bottom: 25px;
+    }
+    
+    .btn-start {
+      display: block;
+      width: 200px;
+      margin: 40px auto 0;
+      padding: 12px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    /* Test Page Styles*/ 
+    #test-page {
+      display: none;
+    }
+    
+    .language-select {
+      border: 1px solid #585555;
+      border-radius: 3px;
+      background-color: white;
+      width: 63px;
+    } 
+
+    .summary-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+          background-color: rgb(0 0 0 / 40%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    /*.pause-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .pause-modal {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    } 
+
+    #resume-btn {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+    }*/
+  </style>
+  
+  
+    <style>
+    .already-attempted {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+	  border: 2px solid #e3e3e3;
+    }
+    .already-attempted h2 {
+      color: #dc3545;
+	  font-size: 24px;
+    }
+    .reattempt-options {
+      margin-top: 30px;
+    }
+    .reattempt-btn {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .view-results-btn {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+	
+
+
+
+  </style>
+  
+  
+  <style>
+  .option-letter {
+  font-weight: bold;
+  margin-right: 5px;
+}
+.correct-indicator {
+  color: #28a745;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+
+
+.option:hover {
+  background: #e9ecef;
+}
+
+.option-letter {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+.correct-answer {
+  color: #28a745;
+  font-weight: bold;
+}
+
+
+
+.correct-indicator {
+  color: #28a745;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+
+
+
+.correct-answer {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.incorrect-answer {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+
+
+
+
+
+.status-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.status-item {
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-item.correct {
+  background-color: #d4edda;
+}
+
+.status-item.incorrect {
+  background-color: #f8d7da;
+}
+
+.status-item.not-answered {
+  background-color: #fff3cd;
+}
+
+.status-item.not-visited {
+  background-color: #e2e3e5;
+}
+
+
+
+
+/* Feedback styling */
+
+
+
+.correct-feedback {
+   /* color: #28a745;
+    font-weight: bold;
+    margin-left: 8px;*/
+	
+    font-weight: bold;
+    margin-left: 8px;
+    background-color: rgb(193 239 180);
+    border-left: 2px solid #28a645;
+    color: #28a645;
+    padding: 0px 12px;
+    text-shadow: 2px 3px 16px #28a645;
+    border-radius: 48px;
+}
+.incorrect-feedback {
+ font-weight: bold;
+    margin-left: 6px;
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 2px solid #dc3545;
+    color: #dc3545;
+    padding: 0px 12px;
+    text-shadow: 2px 3px 16px #f72c0c;
+    border-radius: 48px;
+    font-size: 15px;
+}
+
+.feedback-text {
+
+  font-weight: 550;
+}
+
+.correct-answer-text {
+  color: #28a745;
+    font-weight: 520;
+    margin-left: 8px;
+    font-size: 15px;
+	font-style: italic;
+}
+
+/* Option states */
+.option-correct {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.option-incorrect {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Base option styling */
+.option {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.option-letter {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* Review mode markers */
+.correct-marker {
+ font-weight: bold;
+    margin-left: 8px;
+    background-color: rgb(193 239 180);
+  /*   border-left: 2px solid #28a645;*/
+    color: #28a645;
+    padding: 0px 12px;
+    text-shadow: 2px 3px 16px #28a645;
+    border-radius: 48px;
+}
+
+span.correct-answer-marker {
+    font-weight: 520;
+    margin-left: 8px;
+    background-color: rgb(209 245 199);
+    border-left: 2px solid #76c989;
+    color: #32a34c;
+    padding: 0px 12px;
+    text-shadow: 2px 3px 16px #568b62;
+    border-radius: 48px;
+}
+.your-answer-marker {
+  color: #6c757d;
+  margin-left: 8px;
+  font-style: italic;
+}
+
+
+  </style>
+  
+  
+  
+  
+  
+    <style>
+  
+  /* Reattempt Toggle Switch Styles */
+.reattempt-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/*.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .2s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+} */
+
+
+
+
+    /* Toggle switch styles */
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 12px;
+}
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+     position: absolute;
+    content: "";
+    height: 21px;
+    width: 21px;
+    left: 1px;
+    bottom: -4px;
+    background-color: #cba22a;
+    transition: .2s;
+    border-radius: 50%;
+    
+    }
+
+input:checked + .slider {
+  background-color: #ffc107;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-label {
+  font-size: 13px;
+    color: #515252;
+}  </style>
+
+
+<style>
+
+.status-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+#marks-count {
+  font-weight: bold;
+  color: #28a745;
+}</style>
+</head>
+
+
+
+<body>
+<div class="container-fluid">
+  <header class="test-header">
+    <div class="header-left">
+      <h1 id="test-title">Loading Test...</h1> 
+    </div>
+    <div class="header-right">
+      <div id="viewSolution" class="timer-container"> <span>Analytics </span></div>
+	  
+	  
+
+   <div class="user-info">  <!--<span id="username">Loading...</span> --></div> 
+    </div>
+  </header>
+  
+  <div class="row">
+    <div class="col-10 row">
+      <div class="col-12 p-1"> 
+        <div class="info-leftp">
+          <span class="subtitle">Section</span>  
+          <span id="reattempt-indicator" class="badge bg-warning text-dark hidden">Re-Attempt Mode</span>
+		    
+        </div>
+      </div>
+      
+      <div class="col-12 p-1"> 
+        <div class="info-leftp"> 
+          <span class="subtitle" id="test-subtitle">  <!-- Loading...  --> </span> 
+          <select id="language-select" class="language-select">
+            <option value="english">English</option>
+            <option value="hindi">हिंदी (Hindi)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="col-12 p-1">
+        <div class="info-panel">
+          <div class="info-left"> 
+            <span>Q: <span id="current-question">1</span>/<span id="total-questions">0</span></span>
+          </div>
+          <div class="info-center"> 
+            <span>Time Spent: <span id="on-time">00:00</span></span>
+          </div> 
+          <div class="info-right"> 
+            <span class="mark">
+              <span class="marks-label">Marks:</span> 
+              <span class="positive-mark">+1.00</span> | 
+              <span class="negative-mark">-0.25</span> 
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6 p-2"> 
+        <div class="question-column">
+          <div class="passage" id="passage"></div>
+      
+        </div>   
+      </div>
+      
+      <div class="col-6 p-2">
+        <div class="answer-column">
+		    <div class="question" id="question"></div>
+          <div class="answer-instructions">
+            <div class="options" id="options"></div>
+			
+<div id="options-container">
+  <!-- Options will be rendered here -->
+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-2 p-8"> 
+      <div class="options-column">
+        <div class="status-panel">
+          <h2 class="stu_name">  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="iconme">
+              <path d="M96 128a128 128 0 1 0 256 0A128 128 0 1 0 96 128zm94.5 200.2l18.6 31L175.8 483.1l-36-146.9c-2-8.1-9.8-13.4-17.9-11.3C51.9 342.4 0 405.8 0 481.3c0 17 13.8 30.7 30.7 30.7l131.7 0c0 0 0 0 .1 0l5.5 0 112 0 5.5 0c0 0 0 0 .1 0l131.7 0c17 0 30.7-13.8 30.7-30.7c0-75.5-51.9-138.9-121.9-156.4c-8.1-2-15.9 3.3-17.9 11.3l-36 146.9L238.9 359.2l18.6-31c6.4-10.7-1.3-24.2-13.7-24.2L224 304l-19.7 0c-12.4 0-20.1 13.6-13.7 24.2z"/>
+            </svg>
+            <span id="user-display-name">Loading...</span>
+          </h2>
+          
+          <span class="subtitlep" id="section-title">Section Summary</span><hr>
+          
+        <div class="status-summary">
+			  <div class="status-item">
+				<span>Marks</span>
+				<span id="marks-count">0/0</span>
+			  </div>
+			 <div class="status-item">  <!--<span>Marked</span> <span id="marked-count">0</span>--> </div>
+			  <div class="status-item"> <span>Attempted</span> <span id="attempted-count">0</span> </div>
+			  <div class="status-item"> <span>Correct</span> <span id="correct-count">0</span> </div>
+			  <div class="status-item"> <span>Incorrect</span> <span id="incorrect-count">0</span> </div>
+			  <!--<div class="status-item"> <span>Not Answered</span> <span id="not-answered-count">0</span> </div> -->
+			  <div class="status-item"> <span>Not Visited</span> <span id="not-visited-count">0</span> </div>
+			</div>
+		  
+		  
+          
+          <div class="question-grid" id="question-grid"></div>
+        
+	 </div>
+      </div> 
+    </div>
+  </div>
+  
+  <footer class="test-footer">
+    <div class="footer-center">
+      <button id="previous-btn" class="btn btn-primary">Previous</button>
+      <button id="next-btn" class="btn btn-primary">Next</button>
+    </div>
+  </footer>
+</div>
+
+
+
+<script  src="https://qe914u-178fb5.gitlab.io/js/kimoctetsoluon.js"></script>
+
+</body>
+</html>
