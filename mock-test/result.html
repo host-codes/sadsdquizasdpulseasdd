@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,10 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
- 
+
+
+
+
 
 <style>
 body{
@@ -750,9 +754,9 @@ div#deletback {
  <!-- <nav>
 	 <a href="index.html" class="link"><label class="logo">Quiz Pulse</label></a>
 <h2 class="userinfo"> </h2>
-	<!-- --><ul id="header-nav"> </ul>
+	<ul id="header-nav"> </ul>
 	<div class="dropdown">
-	<!-- --><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" >
+	<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" >
               <span id="user-name"></span> 
 			  <img id="user-avatar" src="data:image/svg+xml;base64,PHN2ZyBjbGFzcz0ic3ZnLWljb24iIHN0eWxlPSJ3aWR0aDogMWVtOyBoZWlnaHQ6IDFlbTt2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO2ZpbGw6IGN1cnJlbnRDb2xvcjtvdmVyZmxvdzogaGlkZGVuOyIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MDcuMzYgMTAzQzI3OS44NCAxMDMgOTQuNzMgMjg4LjEyIDk0LjczIDUxNS42NmE0MjIuNDEgNDIyLjQxIDAgMCAwIDYuNDggNzAuNjFjMCAwLjE0IDAuMjUgMC4wOCAwLjMgMC4yYTEzLjU4IDEzLjU4IDAgMCAwIDEzIDEwLjA2IDEzLjc2IDEzLjc2IDAgMCAwIDEzLjc1LTEzLjc2IDExLjg4IDExLjg4IDAgMCAwLTAuMjctMS4zMmwwLjI0LTAuMTFhMzg2IDM4NiAwIDAgMS02LTY1LjY2YzAtMjEyLjcgMTcyLjQzLTM4NS4xMyAzODUuMTItMzg1LjEzUzg5Mi40OSAzMDMgODkyLjQ5IDUxNS42OCA3MjAuMDYgOTAwLjggNTA3LjM2IDkwMC44Yy0xNDIuMTQgMC0yNjYtNzcuMjItMzMyLjY5LTE5MS43OSAwLTAuMDctMC4wOS0wLjExLTAuMTEtMC4xOC0wLjE4LTAuMy0wLjM4LTAuNTktMC41NS0wLjg5YTEzLjYxIDEzLjYxIDAgMCAwLTEyLTcuMzcgMTMuNzYgMTMuNzYgMCAwIDAtMTMuNzUgMTMuNzUgMTMuNDIgMTMuNDIgMCAwIDAgMi43NCA3LjgzbC0wLjIzIDAuMTRjNzEuNTMgMTIzIDIwNC40MSAyMDYgMzU2LjYxIDIwNkM3MzQuODkgOTI4LjI5IDkyMCA3NDMuMiA5MjAgNTE1LjY2UzczNC44OSAxMDMgNTA3LjM2IDEwM3oiIGZpbGw9IiMzNTg1RjkiIC8+PHBhdGggZD0iTTUwNy4zNyA1NzAuNDNjODIuMzIgMCAxNDkuMzEgNjcgMTQ5LjMxIDE0OS4zMWgyNy41MWMwLTk3LjQ5LTc5LjMyLTE3Ni44Mi0xNzYuODItMTc2Ljgycy0xNzYuODMgNzkuMzMtMTc2LjgzIDE3Ni44MmgyNy41MWMwLTgyLjMzIDY2Ljk1LTE0OS4zMSAxNDkuMzItMTQ5LjMxeiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNMzQ0LjI5IDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNjcwLjQzIDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNTMxLjg1NDQ2NCA0NDguNjIwNjM2bS03Ni45MjYxNDYgNzYuOTI2MTQ3YTEwOC43OSAxMDguNzkgMCAxIDAgMTUzLjg1MjI5My0xNTMuODUyMjk0IDEwOC43OSAxMDguNzkgMCAxIDAtMTUzLjg1MjI5MyAxNTMuODUyMjk0WiIgZmlsbD0iI0JBRDRGRiIgLz48cGF0aCBkPSJNNTA3LjM2IDU3MC40MmMtNzUuMTUgMC0xMzYuMjktNjEuMTQtMTM2LjI5LTEzNi4zczYxLjE0LTEzNi4zIDEzNi4yOS0xMzYuMyAxMzYuMyA2MS4xNSAxMzYuMyAxMzYuMy02MS4xNCAxMzYuMy0xMzYuMyAxMzYuM3ogbTAtMjQ1LjA5YTEwOC44IDEwOC44IDAgMSAwIDEwOC44IDEwOC43OSAxMDguOTIgMTA4LjkyIDAgMCAwLTEwOC44LTEwOC43OXoiIGZpbGw9IiMzNTg1RjkiIC8+PC9zdmc+" class="rounded-circle me-2" alt="User" style="width:30px;height:30px;" class="profile-pic" id="profileToggle">
              
@@ -771,27 +775,37 @@ div#deletback {
 
 
   
+   
    <nav>
-
-	 <a href="/" class="link"><label class="logo">Quiz Pulse</label></a>
+	 <a href="index.html" class="link"><label class="logo">Quiz Pulse</label></a>
 <h2 class="userinfo"> </h2>
-
-	<!-- --><ul id="header-nav"> </ul>
- <div class="dropdown">
-	<!-- --><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" >
+	<ul id="header-nav"> </ul>
+    <div class="dropdown">
+	<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" >
               <span id="user-name"></span> 
 			  <img id="user-avatar" src="data:image/svg+xml;base64,PHN2ZyBjbGFzcz0ic3ZnLWljb24iIHN0eWxlPSJ3aWR0aDogMWVtOyBoZWlnaHQ6IDFlbTt2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO2ZpbGw6IGN1cnJlbnRDb2xvcjtvdmVyZmxvdzogaGlkZGVuOyIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MDcuMzYgMTAzQzI3OS44NCAxMDMgOTQuNzMgMjg4LjEyIDk0LjczIDUxNS42NmE0MjIuNDEgNDIyLjQxIDAgMCAwIDYuNDggNzAuNjFjMCAwLjE0IDAuMjUgMC4wOCAwLjMgMC4yYTEzLjU4IDEzLjU4IDAgMCAwIDEzIDEwLjA2IDEzLjc2IDEzLjc2IDAgMCAwIDEzLjc1LTEzLjc2IDExLjg4IDExLjg4IDAgMCAwLTAuMjctMS4zMmwwLjI0LTAuMTFhMzg2IDM4NiAwIDAgMS02LTY1LjY2YzAtMjEyLjcgMTcyLjQzLTM4NS4xMyAzODUuMTItMzg1LjEzUzg5Mi40OSAzMDMgODkyLjQ5IDUxNS42OCA3MjAuMDYgOTAwLjggNTA3LjM2IDkwMC44Yy0xNDIuMTQgMC0yNjYtNzcuMjItMzMyLjY5LTE5MS43OSAwLTAuMDctMC4wOS0wLjExLTAuMTEtMC4xOC0wLjE4LTAuMy0wLjM4LTAuNTktMC41NS0wLjg5YTEzLjYxIDEzLjYxIDAgMCAwLTEyLTcuMzcgMTMuNzYgMTMuNzYgMCAwIDAtMTMuNzUgMTMuNzUgMTMuNDIgMTMuNDIgMCAwIDAgMi43NCA3LjgzbC0wLjIzIDAuMTRjNzEuNTMgMTIzIDIwNC40MSAyMDYgMzU2LjYxIDIwNkM3MzQuODkgOTI4LjI5IDkyMCA3NDMuMiA5MjAgNTE1LjY2UzczNC44OSAxMDMgNTA3LjM2IDEwM3oiIGZpbGw9IiMzNTg1RjkiIC8+PHBhdGggZD0iTTUwNy4zNyA1NzAuNDNjODIuMzIgMCAxNDkuMzEgNjcgMTQ5LjMxIDE0OS4zMWgyNy41MWMwLTk3LjQ5LTc5LjMyLTE3Ni44Mi0xNzYuODItMTc2Ljgycy0xNzYuODMgNzkuMzMtMTc2LjgzIDE3Ni44MmgyNy41MWMwLTgyLjMzIDY2Ljk1LTE0OS4zMSAxNDkuMzItMTQ5LjMxeiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNMzQ0LjI5IDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNjcwLjQzIDcxOS43NG0tMTMuNzUgMGExMy43NSAxMy43NSAwIDEgMCAyNy41IDAgMTMuNzUgMTMuNzUgMCAxIDAtMjcuNSAwWiIgZmlsbD0iIzM1ODVGOSIgLz48cGF0aCBkPSJNNTMxLjg1NDQ2NCA0NDguNjIwNjM2bS03Ni45MjYxNDYgNzYuOTI2MTQ3YTEwOC43OSAxMDguNzkgMCAxIDAgMTUzLjg1MjI5My0xNTMuODUyMjk0IDEwOC43OSAxMDguNzkgMCAxIDAtMTUzLjg1MjI5MyAxNTMuODUyMjk0WiIgZmlsbD0iI0JBRDRGRiIgLz48cGF0aCBkPSJNNTA3LjM2IDU3MC40MmMtNzUuMTUgMC0xMzYuMjktNjEuMTQtMTM2LjI5LTEzNi4zczYxLjE0LTEzNi4zIDEzNi4yOS0xMzYuMyAxMzYuMyA2MS4xNSAxMzYuMyAxMzYuMy02MS4xNCAxMzYuMy0xMzYuMyAxMzYuM3ogbTAtMjQ1LjA5YTEwOC44IDEwOC44IDAgMSAwIDEwOC44IDEwOC43OSAxMDguOTIgMTA4LjkyIDAgMCAwLTEwOC44LTEwOC43OXoiIGZpbGw9IiMzNTg1RjkiIC8+PC9zdmc+" class="rounded-circle me-2" alt="User" style="width:30px;height:30px;" class="profile-pic" id="profileToggle">
              
             </a> 
-
       <ul class="dropdown-menu" id="dropdownMenu">
-        <li><i class='fa fa-home'></i> <a  href="/">Home</a></li>
+        <li><i class='fa fa-home'></i> <a  href="https://quizpulse.a-web.online">Home</a></li>
+		  <li><i class='bx bxs-dashboard'></i> <a href="https://quizpulse.a-web.online/dashboard">Dashboard</a> </li>
        <li id="signout-btn" ><i class='bx bx-log-out'></i>  Logout </li>
 
       </ul>
     </div>
 	 <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11"></div>
   </nav> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   <div class="container py-5">
     <div class="row mb-4">
@@ -1206,22 +1220,19 @@ div#deletback {
     <footer>
         <h5 class="footerp">Copyright &copy; 2025 - Quiz Pulse | All Rights Reserved.</h5>
     </footer>
- 
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-
-	  <!-- Bootstrap JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Firebase SDK v9 -->
- <!--  --> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script> 
   
-  <!-- Dashboard Logic -->
- <script type="module" src="https://qe914u-178fb5.gitlab.io/js/dashboard.js"></script>
-
-<script type="module" src="https://qe914u-178fb5.gitlab.io/js/resultmocktest.js"></script>
+   <script type="module" src="https://qe914u-178fb5.gitlab.io/js/dashboard.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script> 
+ <script type="module" src="https://qe914u-178fb5.gitlab.io/js/resultmocktest.js"></script>
 <script type="module" src="https://qe914u-178fb5.gitlab.io/js/updatefromgoogle.js"></script>
-<script type="module" src="https://qe914u-178fb5.gitlab.io/js/fornormalpageloginsignout.jspp"></script>
+
 </body>
 </html>
