@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Action | Quiz Pulse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --success: #4BB543;
+            --error: #ef233c;
+            --text: #2b2d42;
+            --light-gray: #f8f9fa;
+            --border: #dee2e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .icon-container {
+            margin: 25px 0;
+            height: 100px;
+            position: relative;
+        }
+        
+        .icon {
+            font-size: 60px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .check-icon {
+            color: var(--success);
+            opacity: 0;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 45px 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .toggle-pw {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text);
+            opacity: 0.6;
+        }
+        
+        .toggle-pw:hover {
+            opacity: 1;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .success-msg {
+            background: rgba(75, 181, 67, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(75, 181, 67, 0.3);
+        }
+        
+        .error-msg {
+            background: rgba(239, 35, 60, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 35, 60, 0.3);
+        }
+        
+        .login-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        
+        /* Animations */
+        @keyframes checkmark {
+            0% { transform: translateX(-50%) scale(0); opacity: 0; }
+            50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">QuizWiz</div>
+        
+        <div class="icon-container">
+            <div id="spinner" class="spinner"></div>
+            <i id="check-icon" class="fas fa-check-circle icon check-icon"></i>
+            <i id="main-icon" class="fas fa-lock icon" style="display: none;"></i>
+        </div>
+        
+        <div id="content">
+            <!-- Content will be dynamically loaded -->
+        </div>
+        
+        <div id="success-message" class="message success-msg" style="display: none;">
+            <p id="success-text"></p>
+        </div>
+        
+        <div id="error-message" class="message error-msg" style="display: none;">
+            <p id="error-text"></p>
+            <a href="/" class="login-link">Go to Homepage</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>		
+
+		
+		const _0x1eebae=_0x566f;function _0x21ac(){const _0x219ae1=['1079720JwiWTr','27VWPyWP','quizpulse.a-web.online','393904BYAOZD','quizwiz-91c47.appspot.com','5837064zoGBYq','75MWknFT','510100jiVjgL','18mzlryx','1:318422165023:web:2966847b71e8777c07172a','425735ThqeHM','quizwiz-91c47','62574LVCePV','232496fUCjAv'];_0x21ac=function(){return _0x219ae1;};return _0x21ac();}function _0x566f(_0x44ed56,_0x3acd2a){const _0x21acf8=_0x21ac();return _0x566f=function(_0x566f82,_0x5550d9){_0x566f82=_0x566f82-0x123;let _0x442518=_0x21acf8[_0x566f82];return _0x442518;},_0x566f(_0x44ed56,_0x3acd2a);}(function(_0x36fd95,_0x184abb){const _0x29b5ae=_0x566f,_0x3b8ae8=_0x36fd95();while(!![]){try{const _0x271fb6=parseInt(_0x29b5ae(0x12f))/0x1+parseInt(_0x29b5ae(0x124))/0x2*(parseInt(_0x29b5ae(0x12d))/0x3)+-parseInt(_0x29b5ae(0x125))/0x4+-parseInt(_0x29b5ae(0x12b))/0x5*(-parseInt(_0x29b5ae(0x123))/0x6)+-parseInt(_0x29b5ae(0x128))/0x7+-parseInt(_0x29b5ae(0x12a))/0x8+-parseInt(_0x29b5ae(0x126))/0x9*(-parseInt(_0x29b5ae(0x12c))/0xa);if(_0x271fb6===_0x184abb)break;else _0x3b8ae8['push'](_0x3b8ae8['shift']());}catch(_0x291e43){_0x3b8ae8['push'](_0x3b8ae8['shift']());}}}(_0x21ac,0x5c015));const firebaseConfig={'apiKey':'AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0','authDomain':_0x1eebae(0x127),'projectId':_0x1eebae(0x130),'storageBucket':_0x1eebae(0x129),'messagingSenderId':'318422165023','appId':_0x1eebae(0x12e),'measurementId':'G-733PML4EFH'};
+		
+        firebase.initializeApp(firebaseConfig);
+
+        // DOM elements
+        const contentDiv = document.getElementById('content');
+        const spinner = document.getElementById('spinner');
+        const checkIcon = document.getElementById('check-icon');
+        const mainIcon = document.getElementById('main-icon');
+        const successMsg = document.getElementById('success-message');
+        const successText = document.getElementById('success-text');
+        const errorMsg = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+
+       // Handle page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get('mode');
+            const oobCode = params.get('oobCode');
+
+            if (!mode || !oobCode) {
+                window.location.href = '/';
+                return;
+            }
+
+            if (mode === 'resetPassword') {
+                verifyResetCode(oobCode); // First verify the code
+            } else if (mode === 'verifyEmail') {
+                showEmailVerification(oobCode);
+            }
+        });
+		
+		
+		    // New function to verify reset code first
+        function verifyResetCode(oobCode) {
+            firebase.auth().verifyPasswordResetCode(oobCode)
+                .then((email) => {
+                    // Only show form if code is valid
+                    showPasswordReset(oobCode, email);
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/invalid-action-code') {
+                        showError("Try resetting your password again. Your request has expired or the link was already used.", true);
+                    } else {
+                        showError(error.message, true);
+                    }
+                });
+        }
+		
+		
+    function showPasswordReset(oobCode, email) {
+            mainIcon.className = 'fas fa-key icon';
+            mainIcon.style.display = 'block';
+            spinner.style.display = 'none';
+
+            contentDiv.innerHTML = `
+                <h2>Reset Your Password</h2>
+                <form id="reset-form">
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="new-password" placeholder="Enter new password" required minlength="6">
+                            <i class="fas fa-eye toggle-pw" id="toggle-pw-1"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirm-password" placeholder="Confirm new password" required minlength="6">
+                            <i class="fas fa-eye toggle-pw" id="toggle-pw-2"></i>
+                        </div>
+                    </div>
+                    <button type="submit" id="reset-btn">
+                        <i class="fas fa-key"></i> Reset Password
+                    </button>
+                </form>
+                <div id="form-error" class="message error-msg" style="display: none; margin-top: 15px;"></div>
+            `;
+
+            // Setup password toggle
+            document.getElementById('toggle-pw-1').addEventListener('click', function() {
+                togglePassword('new-password', this);
+            });
+            document.getElementById('toggle-pw-2').addEventListener('click', function() {
+                togglePassword('confirm-password', this);
+            });
+
+            // Handle form submission
+            document.getElementById('reset-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const btn = document.getElementById('reset-btn');
+                const formError = document.getElementById('form-error');
+                
+                // Hide previous errors
+                formError.style.display = 'none';
+                
+                // Validation
+                if (newPassword !== confirmPassword) {
+                    formError.textContent = "Passwords don't match";
+                    formError.style.display = 'block';
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    formError.textContent = "Password must be at least 6 characters";
+                    formError.style.display = 'block';
+                    return;
+                }
+                
+                // Disable button during processing
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                try {
+                    await firebase.auth().confirmPasswordReset(oobCode, newPassword);
+                    showSuccess("Password changed successfully!", true);
+                } catch (error) {
+                    formError.style.display = 'none'; // Hide form error if any
+                    if (error.code === 'auth/invalid-action-code') {
+                        showError("Try resetting your password again. Your request has expired or the link was already used.", true);
+                    } else {
+                        showError(error.message);
+                    }
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-key"></i> Reset Password';
+                }
+            });
+        }
+
+        function showEmailVerification(oobCode) {
+            mainIcon.className = 'fas fa-envelope icon';
+            mainIcon.style.display = 'block';
+            spinner.style.display = 'none';
+
+            contentDiv.innerHTML = `
+                <h2>Email Verification</h2>
+                <p>Verifying your email address...</p>
+            `;
+
+            firebase.auth().applyActionCode(oobCode)
+                .then(() => {
+                    showSuccess("Email verified successfully!", true);
+                })
+                .catch(error => {
+                    if (error.code === 'auth/invalid-action-code') {
+                        showError("This verification link has expired or was already used.", true);
+                    } else {
+                        showError(error.message, true);
+                    }
+                });
+        }
+
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function showSuccess(message, autoRedirect = false) {
+            contentDiv.style.display = 'none';
+            mainIcon.style.display = 'none';
+            
+            // Show checkmark animation
+            checkIcon.style.display = 'block';
+            checkIcon.style.animation = 'checkmark 0.6s ease forwards';
+            
+            // Show success message
+            successText.textContent = message;
+            successMsg.style.display = 'block';
+            
+            if (autoRedirect) {
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 9000);
+            }
+        }
+
+        function showError(message, autoRedirect = false) {
+            spinner.style.display = 'none';
+            mainIcon.style.display = 'none';
+            contentDiv.style.display = 'none';
+            
+            errorText.textContent = message;
+            errorMsg.style.display = 'block';
+            
+            if (autoRedirect) {
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 9000);
+            }
+        }
+    </script>
+</body>
+</html>
