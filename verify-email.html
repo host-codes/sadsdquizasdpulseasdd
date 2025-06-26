@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email | Quiz Pulse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	  <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --success-color: #4BB543;
+            --error-color: #ef233c;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color);
+        }
+        
+        .verify-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+       
+		
+		.logo {
+    margin-bottom: 25px;
+    font-weight: 300;
+    font-family: 'Cabin Sketch', sans-serif;
+    font-size: 29px;
+    color: #8d70e3;
+    text-shadow: -1px 2px 5px #3f3c3c;
+		}
+        
+        .icon-container {
+            margin: 20px 0;
+            position: relative;
+            height: 80px;
+        }
+        
+        .check-icon {
+            font-size: 60px;
+            color: var(--success-color);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+        }
+        
+        .check-icon.animated {
+            opacity: 1;
+            transform: scale(1);
+            animation: bounce 0.5s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(75, 181, 67, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(75, 181, 67, 0.3);
+        }
+        
+        .error-message {
+            background-color: rgba(239, 35, 60, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 35, 60, 0.3);
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .login-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .login-button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div class="logo">Quiz Pulse</div>
+        
+        <div class="icon-container">
+            <i class="fas fa-check-circle check-icon" id="check-icon"></i>
+        </div>
+        
+        <h2>Email Verification</h2>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Verifying your email...</p>
+        </div>
+        
+        <div id="success-message" class="message success-message" style="display: none;">
+            <p>Email verified successfully! You can now login to your account.</p>
+        </div>
+        
+        <div id="error-message" class="message error-message" style="display: none;">
+            <p id="error-text">Try verifying your email again. Your request to verify your email has expired or the link has already been used.</p>
+        </div>
+        
+        <a href="/login" class="login-button" id="login-button" style="display: none;">
+            <i class="fas fa-sign-in-alt"></i> Go to Login
+        </a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    
+    <script>
+const _0x407049=_0x5089;(function(_0x4f48aa,_0x5d8a70){const _0x33241e=_0x5089,_0x29728e=_0x4f48aa();while(!![]){try{const _0x2f6e33=-parseInt(_0x33241e(0xa1))/0x1*(-parseInt(_0x33241e(0x99))/0x2)+-parseInt(_0x33241e(0xa6))/0x3+parseInt(_0x33241e(0x95))/0x4*(parseInt(_0x33241e(0x96))/0x5)+-parseInt(_0x33241e(0xb7))/0x6*(parseInt(_0x33241e(0xbb))/0x7)+parseInt(_0x33241e(0xb1))/0x8+-parseInt(_0x33241e(0x9b))/0x9+-parseInt(_0x33241e(0x9c))/0xa*(-parseInt(_0x33241e(0xb4))/0xb);if(_0x2f6e33===_0x5d8a70)break;else _0x29728e['push'](_0x29728e['shift']());}catch(_0x15699c){_0x29728e['push'](_0x29728e['shift']());}}}(_0x53fe,0x689df));function _0x53fe(){const _0x3abdd9=['location','style','552021IoatIx','login-button','oobCode','error-message','Error\x20verifying\x20email:\x20','1868031OfCFPF','message','success-message','initializeApp','https://quizpulse.a-web.online/login','quizwiz-91c47.appspot.com','auth/invalid-action-code','textContent','get','none','display','1966152iReXlr','AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0','applyActionCode','1699874nJEecC','quizwiz.a-web.online','catch','6tlmIYZ','then','check-icon','verifyEmail','4416083MawdMz','animated','1:318422165023:web:2966847b71e8777c07172a','mode','2596KiLrVo','3970EIfmtr','block','getElementById','2labpzI','add','3633381vZiSZg','50exbZPY','G-733PML4EFH','318422165023'];_0x53fe=function(){return _0x3abdd9;};return _0x53fe();}function _0x5089(_0x40971e,_0x496f47){const _0x53fefc=_0x53fe();return _0x5089=function(_0x5089e9,_0x3e462b){_0x5089e9=_0x5089e9-0x92;let _0x522460=_0x53fefc[_0x5089e9];return _0x522460;},_0x5089(_0x40971e,_0x496f47);}const firebaseConfig={'apiKey':_0x407049(0xb2),'authDomain':_0x407049(0xb5),'projectId':'quizwiz-91c47','storageBucket':_0x407049(0xab),'messagingSenderId':_0x407049(0x9e),'appId':_0x407049(0x93),'measurementId':_0x407049(0x9d)};firebase[_0x407049(0xa9)](firebaseConfig);const urlParams=new URLSearchParams(window['location']['search']),oobCode=urlParams['get'](_0x407049(0xa3)),mode=urlParams[_0x407049(0xae)](_0x407049(0x94)),loadingElement=document['getElementById']('loading'),successElement=document[_0x407049(0x98)](_0x407049(0xa8)),errorElement=document[_0x407049(0x98)](_0x407049(0xa4)),checkIcon=document['getElementById'](_0x407049(0xb9)),loginButton=document[_0x407049(0x98)](_0x407049(0xa2)),errorText=document[_0x407049(0x98)]('error-text');!oobCode||mode!==_0x407049(0xba)?window[_0x407049(0x9f)]['href']=_0x407049(0xaa):firebase['auth']()[_0x407049(0xb3)](oobCode)[_0x407049(0xb8)](()=>{const _0x150372=_0x407049;loadingElement[_0x150372(0xa0)][_0x150372(0xb0)]=_0x150372(0xaf),checkIcon['classList'][_0x150372(0x9a)](_0x150372(0x92)),successElement['style'][_0x150372(0xb0)]=_0x150372(0x97),loginButton[_0x150372(0xa0)]['display']='inline-block',setTimeout(()=>{const _0x556333=_0x150372;window[_0x556333(0x9f)]['href']=_0x556333(0xaa);},0x1388);})[_0x407049(0xb6)](_0x8022de=>{const _0x4ede87=_0x407049;loadingElement[_0x4ede87(0xa0)]['display']=_0x4ede87(0xaf),_0x8022de['code']===_0x4ede87(0xac)?errorText[_0x4ede87(0xad)]='Try\x20verifying\x20your\x20email\x20again.\x20Your\x20request\x20to\x20verify\x20your\x20email\x20has\x20expired\x20or\x20the\x20link\x20has\x20already\x20been\x20used.':errorText[_0x4ede87(0xad)]=_0x4ede87(0xa5)+_0x8022de[_0x4ede87(0xa7)],errorElement[_0x4ede87(0xa0)]['display']='block',loginButton[_0x4ede87(0xa0)]['display']='inline-block';});
+    </script>
+</body>
+</html>
