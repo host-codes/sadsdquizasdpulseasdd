@@ -178,10 +178,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     
     <script>
-		
-		const _0x2d1791=_0x2025;function _0x459d(){const _0x5f17d4=['3787844IDXsLH','quizwiz-91c47.firebaseapp.com','initializeApp','2690191CABWRn','16xnaKJA','9IBOCTn','G-733PML4EFH','quizwiz-91c47','3MPhNGY','2725630ddAHdt','24tdNsdj','1842930omIOEq','quizwiz-91c47.appspot.com','318422165023','4138827CInFCi','5042rfwzuj','2358612TinkHF'];_0x459d=function(){return _0x5f17d4;};return _0x459d();}(function(_0x4d394b,_0x15cd7b){const _0x84f630=_0x2025,_0x146493=_0x4d394b();while(!![]){try{const _0x4625a3=-parseInt(_0x84f630(0x1ca))/0x1*(parseInt(_0x84f630(0x1cf))/0x2)+-parseInt(_0x84f630(0x1c8))/0x3*(parseInt(_0x84f630(0x1d1))/0x4)+parseInt(_0x84f630(0x1c9))/0x5+-parseInt(_0x84f630(0x1d0))/0x6+parseInt(_0x84f630(0x1c3))/0x7*(parseInt(_0x84f630(0x1c4))/0x8)+-parseInt(_0x84f630(0x1c5))/0x9*(-parseInt(_0x84f630(0x1cb))/0xa)+parseInt(_0x84f630(0x1ce))/0xb;if(_0x4625a3===_0x15cd7b)break;else _0x146493['push'](_0x146493['shift']());}catch(_0x5d5249){_0x146493['push'](_0x146493['shift']());}}}(_0x459d,0x73a87));const firebaseConfig={'apiKey':'AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0','authDomain':_0x2d1791(0x1c1),'projectId':_0x2d1791(0x1c7),'storageBucket':_0x2d1791(0x1cc),'messagingSenderId':_0x2d1791(0x1cd),'appId':'1:318422165023:web:2966847b71e8777c07172a','measurementId':_0x2d1791(0x1c6)};function _0x2025(_0xed4aa7,_0x13691a){const _0x459d28=_0x459d();return _0x2025=function(_0x2025c3,_0x41dd20){_0x2025c3=_0x2025c3-0x1c1;let _0x2117a4=_0x459d28[_0x2025c3];return _0x2117a4;},_0x2025(_0xed4aa7,_0x13691a);}firebase[_0x2d1791(0x1c2)](firebaseConfig);
-
-        // Get parameters from URL
+	const _0x47c252=_0x7294;(function(_0x55e4c6,_0x18af1e){const _0x560306=_0x7294,_0x15d0fb=_0x55e4c6();while(!![]){try{const _0x250823=parseInt(_0x560306(0x10c))/0x1*(-parseInt(_0x560306(0x118))/0x2)+-parseInt(_0x560306(0x113))/0x3*(-parseInt(_0x560306(0x10e))/0x4)+-parseInt(_0x560306(0x119))/0x5+parseInt(_0x560306(0x10f))/0x6*(parseInt(_0x560306(0x112))/0x7)+parseInt(_0x560306(0x116))/0x8*(-parseInt(_0x560306(0x10d))/0x9)+parseInt(_0x560306(0x110))/0xa+parseInt(_0x560306(0x115))/0xb;if(_0x250823===_0x18af1e)break;else _0x15d0fb['push'](_0x15d0fb['shift']());}catch(_0x2906cd){_0x15d0fb['push'](_0x15d0fb['shift']());}}}(_0x4ce1,0x74f4f));function _0x4ce1(){const _0x4356dc=['initializeApp','21OjjQir','236487xUsjiA','AIzaSyDaaytl89rdhGmBroRPpYEt55zmDjFefQ0','5225341JPpaTB','48mvMHaL','1:318422165023:web:2966847b71e8777c07172a','732142KWjHqf','2850470fKjpMq','1BrmQTN','1296189DBgQpk','12ShcFOE','1344018QtTFds','8958190LBSzrh'];_0x4ce1=function(){return _0x4356dc;};return _0x4ce1();}const firebaseConfig={'apiKey':_0x47c252(0x114),'authDomain':'quizpulse.a-web.online','projectId':'quizwiz-91c47','storageBucket':'quizwiz-91c47.appspot.com','messagingSenderId':'318422165023','appId':_0x47c252(0x117),'measurementId':'G-733PML4EFH'};function _0x7294(_0x53106a,_0x18e15e){const _0x4ce15e=_0x4ce1();return _0x7294=function(_0x72940a,_0x1851fe){_0x72940a=_0x72940a-0x10c;let _0x3949e2=_0x4ce15e[_0x72940a];return _0x3949e2;},_0x7294(_0x53106a,_0x18e15e);}firebase[_0x47c252(0x111)](firebaseConfig);	
+	
+	    // Get parameters from URL
         const urlParams = new URLSearchParams(window.location.search);
         const oobCode = urlParams.get('oobCode');
         const mode = urlParams.get('mode');
@@ -196,7 +195,7 @@
         
         // Redirect if no valid verification code
         if (!oobCode || mode !== 'verifyEmail') {
-            window.location.href = 'https://quizpulse.a-web.online/login';
+            window.location.href = '/login';
         } else {
             // Apply email verification
             firebase.auth().applyActionCode(oobCode)
@@ -209,7 +208,7 @@
                     
                     // Redirect after 5 seconds
                     setTimeout(() => {
-                        window.location.href = 'https://quizpulse.a-web.online/login';
+                        window.location.href = '/login';
                     }, 5000);
                 })
                 .catch((error) => {
