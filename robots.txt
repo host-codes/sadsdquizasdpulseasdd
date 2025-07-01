@@ -1,7 +1,5 @@
 User-agent: *
-Allow: /
 Disallow: /private/
 Disallow: /admin/
-Disallow: /nest_page/
 
 Sitemap: https://quizpulse.a-web.online/sitemap.xml
