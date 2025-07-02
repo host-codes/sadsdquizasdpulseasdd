@@ -386,9 +386,9 @@ background-color: #f9f9f9;
 
 .marked {
     background-color: #624182;
-    border-radius: 50px;
+    /* border-radius: 50px; */
 	color: #ffffff;
-}
+} 
 
 .answered-marked {
        background: linear-gradient(135deg, #624182 50%, #4caf50 50%);
