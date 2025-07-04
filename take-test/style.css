@@ -377,7 +377,8 @@ px
     clip-path: polygon(1% 0%, 97% 0%, 100% 52%, 75% 100%, 25% 100%, 0% 50%);*/
 	
 	background: linear-gradient(to bottom, #ff5008, #ac2909);
-    clip-path: polygon(0 0, 100% 0, 100% 58%, 71% 100%, 29% 100%, 0 59%);
+    /*clip-path: polygon(0 0, 100% 0, 100% 58%, 71% 100%, 29% 100%, 0 59%); */
+	clip-path: polygon(0 0, 100% 0, 100% 57%, 73% 100%, 29% 100%, 0 54%);
 }
 
 .not-visited {
