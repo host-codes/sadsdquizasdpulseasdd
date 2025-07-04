@@ -483,7 +483,8 @@ clip-path: polygon(1% 0%, 97% 0%, 100% 94%, 75% 100%, -41% 100%, 0% 50%);
     align-items: center;
     width: 41px;
     height: 41px;
-    border: 1px solid #b9b5b5;
+  /*  border: 1px solid #b9b5b5; */
+	border: 1px solid #8c8b8b;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
