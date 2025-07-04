@@ -1056,9 +1056,18 @@ input[type="radio"]:checked::after {
 }
 
 
-span#question-timer {
+/* span#question-timer {
     font-weight: bold;
     color: #333;
+} */
+
+span#question-timer {
+    font-weight: 500;
+    color: #333;
+    border: 1px solid #bdbdbd;
+    padding: 0px 14px 0px;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 button#fullscreen-btn {
