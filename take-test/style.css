@@ -398,13 +398,18 @@ background-color: #f9f9f9;
     border-radius: 50px;
 }
 
-.question-grid {
+/* .question-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
     gap: 10px;
 	margin-top: 20px;
-}
-
+} */
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 11px;
+    margin-top: 8px;
+} 
 
 .question-number-box {
    position: relative; /* Needed for absolute positioning of icons */
